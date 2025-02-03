@@ -1,0 +1,33 @@
+.team {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.team-grid {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.team-card {
+  background: var(--light-beige);
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  width: 30%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.team-card img {
+  width: 100%;
+  border-radius: 10px;
+}
+
+.team-info {
+  margin-top: 10px;
+}
+
+.team-card:hover {
+  transform: scale(1.05);
+}

@@ -1,0 +1,21 @@
+#floatingSvg {
+  position: fixed;
+  bottom: 20px; /* Adjust for vertical positioning */
+  right: 20px; /* Adjust for horizontal positioning */
+  z-index: 1000; /* Makes sure it stays on top */
+  animation: floatAnimation 3s ease-in-out infinite;
+  width: 1000px;
+}
+
+/* Optional: Add floating animation */
+@keyframes floatAnimation {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px); /* Move the image up */
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
