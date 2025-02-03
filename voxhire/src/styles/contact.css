@@ -41,7 +41,7 @@
   padding: 10px;
   border: 1px solid var(--dark-brown);
   border-radius: 5px;
-  width: 36em;
+  width: auto;
   height: 1.3em;
 }
 
