@@ -1,3 +1,4 @@
+// controllers/auth.controller.ts
 import { Request, Response } from "express";
 import User from "../models/User";
 import bcrypt from "bcryptjs";
@@ -11,7 +12,12 @@ const otpStore: {
   [email: string]: {
     otp: string;
     expiresAt: number;
-    userData?: { name: string; hashedPassword: string; role: string };
+    userData?: {
+      name: string;
+      hashedPassword: string;
+      role: string;
+      profile_picture?: string;
+    };
   };
 } = {};
 
@@ -27,7 +33,7 @@ const transporter = nodemailer.createTransport({
 // 🔥 **Register & Send OTP**
 export const registerUser = async (req: Request, res: Response) => {
   try {
-    const { name, email, password, role } = req.body;
+    const { name, email, password, role, profile_picture } = req.body;
 
     // 🛑 Check if User Already Exists
     const existingUser = await User.findOne({ email });
@@ -43,7 +49,7 @@ export const registerUser = async (req: Request, res: Response) => {
     otpStore[email] = {
       otp,
       expiresAt: Date.now() + 10 * 60 * 1000, // Expires in 10 minutes
-      userData: { name, hashedPassword, role },
+      userData: { name, hashedPassword, role, profile_picture },
     };
 
     // 📧 Send OTP via Email
@@ -74,8 +80,15 @@ export const verifyOtp = async (req: Request, res: Response) => {
     }
 
     // 🎉 Create User After OTP Verification
-    const { name, hashedPassword, role } = otpStore[email].userData!; // `!` ensures userData exists
-    const newUser = new User({ name, email, password: hashedPassword, role });
+    const { name, hashedPassword, role, profile_picture } =
+      otpStore[email].userData!;
+    const newUser = new User({
+      name,
+      email,
+      password: hashedPassword,
+      role,
+      profile_picture,
+    });
     await newUser.save();
 
     delete otpStore[email]; // Cleanup OTP after successful verification
