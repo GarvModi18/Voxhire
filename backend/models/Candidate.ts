@@ -1,7 +1,8 @@
+// candidate.ts
 import mongoose, { Schema, Document } from "mongoose";
 
 export interface ICandidate extends Document {
-  candidate_id: mongoose.Types.ObjectId;
+  user_id: mongoose.Types.ObjectId;
   bio: string;
   interview_sessions: mongoose.Types.ObjectId[];
   overall_score?: number;
@@ -9,7 +10,7 @@ export interface ICandidate extends Document {
 }
 
 const CandidateSchema: Schema = new Schema({
-  candidate_id: {
+  user_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: true,
