@@ -3,8 +3,8 @@ import { useInView } from "../hooks/UseInView";
 import "../styles/team.css";
 const teamMembers = [
   { name: "Garv Modi", role: "Backend Devloper", img: "/team1.jpg" },
-  { name: "Dhruvi Lolariya", role: "UI/UX Designer", img: "/team2.jpg" },
-  { name: "Krish Thakkar", role: "Frontend Devloper", img: "/team3.jpg" },
+  { name: "Dhruvi Lolariya", role: "Frontend Devloper", img: "/team2.jpg" },
+  { name: "Krish Thakkar", role: "UI/UX Designer", img: "/team3.jpg" },
 ];
 
 export default function Team() {
@@ -18,7 +18,7 @@ export default function Team() {
       animate={isVisible ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.8 }}
     >
-      <h2>Meet Our Team</h2>
+      <h2 className="titles">Meet Our Team</h2>
       <div className="team-grid">
         {teamMembers.map((member, index) => (
           <motion.div

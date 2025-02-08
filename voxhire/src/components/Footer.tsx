@@ -1,4 +1,5 @@
 import "../styles/footer.css";
+import { Facebook, Twitter, Instagram } from "lucide-react";
 
 export default function Footer() {
   return (
@@ -34,16 +35,16 @@ export default function Footer() {
         </ul>
       </div>
       <div className="footer-section">
-        <h4>Follow Us</h4>
+        <h4 className="follow">Follow Us</h4>
         <div className="social-icons">
           <a href="#">
-            <i className="fab fa-facebook"></i>
+            <Facebook className="icon" />
           </a>
           <a href="#">
-            <i className="fab fa-twitter"></i>
+            <Twitter className="icon" />
           </a>
           <a href="#">
-            <i className="fab fa-instagram"></i>
+            <Instagram className="icon" />
           </a>
         </div>
       </div>

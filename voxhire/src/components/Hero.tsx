@@ -1,10 +1,11 @@
 import { motion } from "framer-motion";
 import { useInView } from "../hooks/UseInView";
 import "../styles/hero.css";
+import { useNavigate } from "react-router-dom";
 
 export default function Hero() {
   const { ref, isVisible } = useInView();
-
+  const navigate = useNavigate();
   return (
     <motion.section
       ref={ref}
@@ -18,7 +19,9 @@ export default function Hero() {
         Prepare, practice, and perfect your interview skills with our AI-powered
         platform.
       </p>
-      <button className="btn">Get Started</button>
+      <button className="btn" onClick={() => navigate("/signup")}>
+        Get Started
+      </button>
     </motion.section>
   );
 }

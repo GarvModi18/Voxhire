@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-
+import DefaultProfile from "../icons/default-profile.png";
 export default function Header({
   user,
   onProfileClick,
@@ -25,7 +25,11 @@ export default function Header({
       </nav>
       {user ? (
         <div className="profile" onClick={onProfileClick}>
-          <img src={user.profilePic} alt="Profile" className="profile-pic" />
+          <img
+            src={user.profilePic || DefaultProfile}
+            alt="Profile"
+            className="profile-pic"
+          />
           <span>{user.name}</span>
         </div>
       ) : (

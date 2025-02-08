@@ -22,16 +22,35 @@ export default function About() {
       >
         <div className="about-text">
           <p>
-            Voxhire is a revolutionary platform that helps job seekers prepare
-            for interviews with AI-driven simulations and personalized feedback.
+            Voxhire is an innovative platform that helps job seekers excel in
+            interviews with
+            <i>
+              {" "}
+              <b>AI-driven simulations</b>
+            </i>{" "}
+            and{" "}
+            <i>
+              <b>real-time feedback</b>
+            </i>{" "}
+            . We empower candidates with the{" "}
+            <i>
+              <b>confidence and skills</b>
+            </i>{" "}
+            they need to land their dream jobs.
           </p>
           <p>
-            Our goal is to bridge the gap between talent and opportunity by
-            providing top-notch interview training.
+            Our mission is to bridge the gap between talent and opportunity by
+            offering{" "}
+            <i>
+              <b>personalized training</b>
+            </i>{" "}
+            that adapts to each user's strengths and weaknesses.
           </p>
-        </div>
-        <div className="about-image">
-          <img src="/about-image.jpg" alt="About Voxhire" />
+          <p>
+            At Voxhire, we believe that <b>everyone deserves a fair chance</b>{" "}
+            to showcase their potential. Join us and take the first step toward
+            <b>career success</b> today!
+          </p>
         </div>
       </motion.div>
     </motion.section>
