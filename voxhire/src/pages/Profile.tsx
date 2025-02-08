@@ -1,37 +1,57 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import "../styles/profile.css";
+import "../styles/Profile.css";
 
 export default function Profile() {
   const navigate = useNavigate();
-  const [user, setUser] = useState({ name: "", profilePic: "" });
+  const [user, setUser] = useState<{
+    name: string;
+    email: string;
+    profilePic: string;
+  } | null>(null);
 
   useEffect(() => {
+    // Get user data from localStorage
     const storedUser = localStorage.getItem("user");
-    if (!storedUser) {
-      navigate("/login");
-      return;
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    } else {
+      navigate("/login"); // Redirect if not logged in
     }
-    setUser(JSON.parse(storedUser));
   }, [navigate]);
 
+  // Logout function
   const handleLogout = () => {
-    localStorage.removeItem("user");
     localStorage.removeItem("token");
-    navigate("/login");
+    localStorage.removeItem("user");
+    navigate("/login"); // Redirect to login page
   };
 
   return (
     <div className="profile-container">
+      <h1 className="voxhire-title">Voxhire</h1>
       <h2>Profile</h2>
-      <img
-        src={user.profilePic || "/default-profile.png"}
-        alt="Profile"
-        className="profile-img"
-      />
-      <h3>{user.name}</h3>
-      <button onClick={handleLogout}>Logout</button>
+
+      {user ? (
+        <div className="profile-card">
+          <img
+            src={user.profilePic || "/images/default-profile.png"} // Default image if no profile pic
+            alt="Profile"
+            className="profile-img"
+          />
+          <p>
+            <strong>Name:</strong> {user.name}
+          </p>
+          <p>
+            <strong>Email:</strong> {user.email}
+          </p>
+          <button className="logout-btn" onClick={handleLogout}>
+            Logout
+          </button>
+        </div>
+      ) : (
+        <p>Loading user details...</p>
+      )}
     </div>
   );
 }

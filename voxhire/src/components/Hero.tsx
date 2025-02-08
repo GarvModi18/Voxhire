@@ -10,7 +10,7 @@ export default function Hero() {
     <motion.section
       ref={ref}
       className="hero"
-      initial={{ opacity: 0, y: 50 }}
+      initial={{ opacity: 1, y: 50 }}
       animate={isVisible ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.8 }}
     >

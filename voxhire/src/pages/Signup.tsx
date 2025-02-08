@@ -85,78 +85,81 @@ const Signup = () => {
   };
 
   return (
-    <div className="signup-container">
-      {/* <h1 className="voxhire-title">Voxhire</h1> */}
-      <h2>Sign Up</h2>
+    <div className="signup-body">
+      <div className="signup-container">
+        {/* <h1 className="voxhire-title">Voxhire</h1> */}
+        <h2>Sign Up</h2>
 
-      {error && <p className="error-message">{error}</p>}
-      {message && <p className="success-message">{message}</p>}
+        {error && <p className="error-message">{error}</p>}
+        {message && <p className="success-message">{message}</p>}
 
-      {!isOtpSent ? (
-        <form onSubmit={handleSubmit}>
-          <input
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            placeholder="Name"
-            required
-          />
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            placeholder="Email"
-            required
-          />
-          <input
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            placeholder="Password"
-            required
-          />
-          <select
-            name="role"
-            value={formData.role}
-            onChange={handleChange}
-            required
-          >
-            <option value="Candidate">Candidate</option>
-            <option value="Admin">Admin</option>
-          </select>
-          <button type="submit" disabled={loading}>
-            {loading ? "Sending..." : "Send OTP"}
+        {!isOtpSent ? (
+          <form onSubmit={handleSubmit}>
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              placeholder="Name"
+              required
+            />
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="Email"
+              required
+            />
+            <input
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              placeholder="Password"
+              required
+            />
+            <select
+              name="role"
+              value={formData.role}
+              onChange={handleChange}
+              required
+            >
+              <option value="Candidate">Candidate</option>
+              <option value="Admin">Admin</option>
+            </select>
+            <button type="submit" disabled={loading}>
+              {loading ? "Sending..." : "Send OTP"}
+            </button>
+          </form>
+        ) : (
+          <form onSubmit={handleOtpSubmit}>
+            <input
+              type="text"
+              name="otp"
+              value={otp}
+              onChange={(e) => setOtp(e.target.value)}
+              placeholder="Enter OTP"
+              required
+            />
+            <p>
+              OTP Expires In: {Math.floor(otpCountdown / 60)}:
+              {otpCountdown % 60}
+            </p>
+            <button type="submit" disabled={loading}>
+              {loading ? "Verifying..." : "Verify OTP"}
+            </button>
+          </form>
+        )}
+
+        {/* Login link */}
+        <p className="login-text">
+          Already have an account?{" "}
+          <button className="login-button" onClick={() => navigate("/login")}>
+            Login here!
           </button>
-        </form>
-      ) : (
-        <form onSubmit={handleOtpSubmit}>
-          <input
-            type="text"
-            name="otp"
-            value={otp}
-            onChange={(e) => setOtp(e.target.value)}
-            placeholder="Enter OTP"
-            required
-          />
-          <p>
-            OTP Expires In: {Math.floor(otpCountdown / 60)}:{otpCountdown % 60}
-          </p>
-          <button type="submit" disabled={loading}>
-            {loading ? "Verifying..." : "Verify OTP"}
-          </button>
-        </form>
-      )}
-
-      {/* Login link */}
-      <p className="login-text">
-        Already have an account?{" "}
-        <button className="login-btn" onClick={() => navigate("/login")}>
-          Login here!
-        </button>
-      </p>
+        </p>
+      </div>
     </div>
   );
 };
