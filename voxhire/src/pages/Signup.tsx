@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import "../styles/Signup.css";
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -17,7 +18,7 @@ const Signup = () => {
   const [loading, setLoading] = useState(false);
   const [otpCountdown, setOtpCountdown] = useState(0);
 
-  // 📝 Handle Input Change
+  // Handle Input Change
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -25,7 +26,7 @@ const Signup = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  // 🔥 Handle Signup & OTP Request
+  // Handle Signup & OTP Request
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -39,7 +40,7 @@ const Signup = () => {
       setMessage(response.data.message);
       setIsOtpSent(true);
 
-      // ⏳ Start OTP Expiry Countdown (10 minutes)
+      // Start OTP Expiry Countdown (10 minutes)
       setOtpCountdown(600);
       const timer = setInterval(() => {
         setOtpCountdown((prev) => {
@@ -57,7 +58,7 @@ const Signup = () => {
     }
   };
 
-  // ✅ Handle OTP Verification
+  // Handle OTP Verification
   const handleOtpSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -74,7 +75,7 @@ const Signup = () => {
 
       setMessage(response.data.message);
       setTimeout(() => {
-        navigate("/"); // 🔄 Redirect on success
+        navigate("/"); // Redirect on success
       }, 2000);
     } catch (error: any) {
       setError(error.response?.data?.message || "Incorrect OTP");
@@ -85,7 +86,11 @@ const Signup = () => {
 
   return (
     <div className="signup-container">
+      {/* <h1 className="voxhire-title">Voxhire</h1> */}
       <h2>Sign Up</h2>
+
+      {error && <p className="error-message">{error}</p>}
+      {message && <p className="success-message">{message}</p>}
 
       {!isOtpSent ? (
         <form onSubmit={handleSubmit}>
@@ -120,7 +125,7 @@ const Signup = () => {
             required
           >
             <option value="Candidate">Candidate</option>
-            <option value="Interviewer">Interviewer</option>
+            <option value="Admin">Admin</option>
           </select>
           <button type="submit" disabled={loading}>
             {loading ? "Sending..." : "Send OTP"}
@@ -145,8 +150,13 @@ const Signup = () => {
         </form>
       )}
 
-      {message && <p className="success-message">{message}</p>}
-      {error && <p className="error-message">{error}</p>}
+      {/* Login link */}
+      <p className="login-text">
+        Already have an account?{" "}
+        <button className="login-btn" onClick={() => navigate("/login")}>
+          Login here!
+        </button>
+      </p>
     </div>
   );
 };

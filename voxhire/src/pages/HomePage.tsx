@@ -3,12 +3,12 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Hero from "../components/Hero";
 import Features from "../components/Features";
-import CTA from "../components/CTA";
 import Team from "../components/Team";
 import Contact from "../components/Contact";
 import Footer from "../components/Footer";
 import "../styles/Home.css";
-import { ArrowRight, CheckCircle } from "lucide-react";
+import About from "../components/About";
+import DefaultProfile from "../icons/default-profile.png";
 
 export default function Home() {
   const navigate = useNavigate();
@@ -22,9 +22,14 @@ export default function Home() {
         const token = localStorage.getItem("token");
         if (!token) return;
 
-        const response = await axios.get("http://localhost:5000/api/user/me", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const response = await axios.get(
+          "http://localhost:5000/api/auth/profile",
+          {
+            // ✅ FIXED URL
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
         setUser(response.data);
       } catch (error) {
         console.error("Error fetching user:", error);
@@ -53,7 +58,11 @@ export default function Home() {
         </nav>
         {user ? (
           <div className="profile" onClick={() => navigate("/profile")}>
-            <img src={user.profilePic} alt="Profile" className="profile-pic" />
+            <img
+              src={user.profilePic || DefaultProfile}
+              alt="Profile"
+              className="profile-pic"
+            />
             <span>{user.name}</span>
           </div>
         ) : (
@@ -64,11 +73,10 @@ export default function Home() {
       </header>
 
       {/* Sections */}
-
       <Hero />
       <Features />
-      <CTA />
       <Team />
+      <About />
       <Contact />
       <Footer />
     </div>
