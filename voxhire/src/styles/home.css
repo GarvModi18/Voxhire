@@ -97,7 +97,7 @@ button {
 
 /* Utility Classes */
 .container {
-  /* width: auto; */
+  width: auto;
   margin: 0 auto;
   background-color: var(--dark-background);
   padding-left: 5%;
@@ -202,7 +202,7 @@ nav ul li a:hover {
 }
 
 .hero p {
-  font-size: 1.2rem;
+  /* font-size: rem; */
   max-width: 600px;
   margin: 0 auto 30px;
 }
@@ -258,38 +258,15 @@ nav ul li a:hover {
   margin-bottom: 10px;
 }
 
-.feature-item p {
+.feature-item {
   font-size: 1.1rem;
 }
-
-/* Footer */
-footer {
-  padding: 20px 0;
-  border-top: 2px solid var(--primary);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+.login-btn {
+  border: 1px solid transparent;
+  padding: 10px 10px;
+  color: var(--background);
 }
-
-footer nav ul {
-  display: flex;
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-footer nav ul li {
-  margin-left: 20px;
-}
-
-footer nav ul li a {
-  text-decoration: none;
-  color: var(--text);
-  font-size: 1rem;
-  font-weight: 600;
-  transition: color 0.3s ease;
-}
-
-footer nav ul li a:hover {
-  color: var(--primary);
+.login-btn:hover {
+  color: var(--secondary);
+  /* background-color: var(--primary); */
 }

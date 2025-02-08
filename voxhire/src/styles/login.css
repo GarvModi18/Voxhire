@@ -1,6 +1,5 @@
 /* styles/Login.css */
-
-body {
+.login-body {
   font-family: "Inter", sans-serif;
   background-color: var(--background);
   color: var(--primary);
@@ -9,7 +8,6 @@ body {
   align-items: center;
   height: 120vh;
 }
-
 .login-container {
   background: white;
   padding: 40px;

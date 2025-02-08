@@ -1,21 +1,3 @@
-/* styles/Signup.css */
-:root {
-  --primary: #023047;
-  --secondary: #219ebc;
-  --text2: #555;
-  --background: #f8f9fa;
-}
-
-body {
-  font-family: "Inter", sans-serif;
-  background-color: var(--background);
-  color: var(--primary);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 120vh;
-}
-
 .signup-container {
   background: white;
   padding: 40px;
@@ -23,6 +5,16 @@ body {
   text-align: center;
   border-radius: 12px;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.signup-body {
+  min-height: 120vh;
+  font-family: "Inter", sans-serif;
+  background-color: var(--background);
+  color: var(--primary);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .voxhire-title {
@@ -62,7 +54,7 @@ select {
   font-size: 1rem;
 }
 
-button {
+.login-button {
   background-color: var(--primary);
   color: white;
   padding: 12px;
@@ -73,7 +65,7 @@ button {
   transition: background-color 0.3s;
 }
 
-button:hover {
+.login-button:hover {
   background-color: #187a99;
 }
 
@@ -86,6 +78,8 @@ button:hover {
 
 .login-btn {
   background: none;
+  min-width: 1em;
+  background-color: var(--background);
   border: none;
   color: var(--primary);
   font-size: 1rem;
@@ -95,6 +89,6 @@ button:hover {
 }
 
 .login-btn:hover {
-  background-color: transparent;
-  color: var(--secondary);
+  background-color: var(--primary);
+  color: var(--background);
 }
