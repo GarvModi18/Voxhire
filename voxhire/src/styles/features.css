@@ -1,0 +1,81 @@
+/* Container Styling */
+.features-container {
+  /* max-width: 1200px; */
+  margin: 0 auto;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+/* Title Styling */
+.features-title {
+  color: var(--primary);
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 30px;
+  font-family: "Mochiy Pop P One", sans-serif;
+}
+
+/* Grid Layout: 2 rows × 4 columns */
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(2, auto);
+  gap: 20px;
+}
+
+/* Feature Card Styling */
+.feature-card {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  transition:
+    transform 0.3s ease-in-out,
+    box-shadow 0.3s ease-in-out;
+}
+
+/* Hover Effect */
+.feature-card:hover {
+  transform: scale(1.1);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Icon Styling */
+.feature-icon {
+  /* color: #780000; */
+  color: var(--primary);
+  width: 50px;
+  height: 50px;
+  margin-bottom: 15px;
+}
+
+/* Title Styling */
+.feature-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  font-family: "Mochiy Pop P One", sans-serif;
+}
+
+/* Description Styling */
+.feature-description {
+  font-size: 14px;
+  color: #555;
+  font-family: "Mochiy Pop P One", sans-serif;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .features-grid {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(4, auto);
+  }
+}
+
+@media (max-width: 768px) {
+  .features-grid {
+    grid-template-columns: repeat(1, 1fr);
+    grid-template-rows: repeat(8, auto);
+  }
+}

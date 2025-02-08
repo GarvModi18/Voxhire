@@ -1,4 +1,10 @@
-/* styles/Login.css */
+/* styles/Signup.css */
+:root {
+  --primary: #023047;
+  --secondary: #219ebc;
+  --text2: #555;
+  --background: #f8f9fa;
+}
 
 body {
   font-family: "Inter", sans-serif;
@@ -10,7 +16,7 @@ body {
   height: 120vh;
 }
 
-.login-container {
+.signup-container {
   background: white;
   padding: 40px;
   width: 400px;
@@ -19,8 +25,15 @@ body {
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
 
-h2 {
+.voxhire-title {
   font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: var(--primary);
+}
+
+h2 {
+  font-size: 1.8rem;
   margin-bottom: 20px;
 }
 
@@ -29,12 +42,18 @@ h2 {
   margin-bottom: 15px;
 }
 
+.success-message {
+  color: green;
+  margin-bottom: 15px;
+}
+
 form {
   display: flex;
   flex-direction: column;
 }
 
-input {
+input,
+select {
   width: auto;
   padding: 12px;
   margin-bottom: 15px;
@@ -58,14 +77,14 @@ button:hover {
   background-color: #187a99;
 }
 
-/* Sign-up section */
-.signup-text {
+/* Login section */
+.login-text {
   margin-top: 20px;
   font-size: 1rem;
   color: var(--text2);
 }
 
-.signup-btn {
+.login-btn {
   background: none;
   border: none;
   color: var(--primary);
@@ -75,7 +94,7 @@ button:hover {
   transition: color 0.3s;
 }
 
-.signup-btn:hover {
+.login-btn:hover {
   background-color: transparent;
   color: var(--secondary);
 }

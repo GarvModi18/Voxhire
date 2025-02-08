@@ -1,0 +1,41 @@
+header {
+  /* width: auto; */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  background: var(--dark-background);
+  color: var(--background);
+}
+
+nav ul {
+  display: flex;
+  list-style: none;
+  gap: 20px;
+}
+nav:hover ul:hover {
+  color: var(--secondary);
+}
+
+.profile {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.profile-pic {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.login-btn {
+  padding: 10px 15px;
+  border-radius: 5px;
+  color: var(--background);
+  text-decoration: none;
+}
+.login-btn:hover {
+  color: var(--secondary);
+}

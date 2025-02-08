@@ -1,4 +1,6 @@
 .contact {
+  background-color: var(--primary);
+  color: var(--background);
   text-align: center;
   padding: 60px 20px;
   opacity: 0; /* Initially hidden */
@@ -17,9 +19,15 @@
   justify-content: center;
   gap: 25px;
 }
-
+.contact h2 {
+  font-size: 30px;
+  font-weight: bold;
+  margin-bottom: 30px;
+  font-family: "Mochiy Pop P One", sans-serif;
+}
 .contact-card {
-  background: var(--light-beige);
+  background: var(--background);
+  color: var(--primary);
   padding: 20px;
   border-radius: 10px;
   width: 45%;
@@ -39,14 +47,14 @@
 .contact-card textarea {
   margin-bottom: 10px;
   padding: 10px;
-  border: 1px solid var(--dark-brown);
+  border: 1px solid var(--secondary);
   border-radius: 5px;
   width: auto;
   height: 1.3em;
 }
 
 .contact-card button {
-  background: var(--burnt-orange);
+  background: var(--primary);
   color: white;
   padding: 10px;
   border: none;
@@ -55,5 +63,5 @@
 }
 
 .contact-card button:hover {
-  background: #e2711fb9;
+  background: var(--secondary);
 }

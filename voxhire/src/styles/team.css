@@ -1,6 +1,8 @@
 .team {
+  background-color: var(--background);
   text-align: center;
   padding: 60px 20px;
+  color: var(--primary);
 }
 
 .team-grid {
@@ -10,21 +12,31 @@
 }
 
 .team-card {
-  background: var(--light-beige);
+  background: white;
+  color: black;
   padding: 20px;
   border-radius: 10px;
   text-align: center;
   width: 30%;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border: 2px solid #023047;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
   transition: transform 0.3s ease;
 }
-
+.titles {
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 30px;
+  font-family: "Mochiy Pop P One", sans-serif;
+}
 .team-card img {
   width: 100%;
   border-radius: 10px;
 }
-
-.team-info {
+.team-info h3 {
+  color: var(--primary);
+}
+.team-info p {
+  color: #555;
   margin-top: 10px;
 }
 

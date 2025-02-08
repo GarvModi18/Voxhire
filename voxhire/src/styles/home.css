@@ -1,18 +1,21 @@
 /* styles.css */
 :root {
-  --off-white: #fcf7ed;
-  --dark-brown: #790a0a;
-  --very-dark-brown: #4a1a0f;
-  --burnt-orange: #d66819;
-  --light-beige: #f7e1d7;
+  /* Updated Color Theme */
+  --primary: #023047;
+  --secondary: #219ebc;
+  --text: #212529;
+  --text2: #555;
+  --background: #f8f9fa;
+  --dark-background: #212529;
 }
 
 body {
   font-family: "Inter", sans-serif;
   margin: 0;
   padding: 0;
-  background-color: var(--off-white);
-  color: var(--dark-brown);
+  box-sizing: border-box;
+  background-color: var(--background);
+  color: var(--text);
   line-height: 1.6;
 }
 
@@ -21,7 +24,7 @@ html {
 }
 
 section {
-  opacity: 0; /* Hidden initially */
+  opacity: 0;
   transform: translateY(50px);
   transition:
     opacity 0.6s ease-out,
@@ -33,13 +36,15 @@ section.visible {
   transform: translateY(0);
 }
 
+/* Profile Section */
 .profile {
   display: flex;
   align-items: center;
   cursor: pointer;
 }
+
 .icon {
-  color: var(--burnt-orange);
+  color: var(--secondary);
   width: 40px;
   height: 40px;
   margin-bottom: 10px;
@@ -53,7 +58,7 @@ section.visible {
 }
 
 .login-btn {
-  background-color: var(--burnt-orange);
+  background-color: var(--primary);
   padding: 10px 15px;
   border-radius: 15px;
   color: white;
@@ -71,8 +76,11 @@ section.visible {
   height: 100px;
   border-radius: 50%;
   margin-bottom: 10px;
+  font-weight: 600;
+  font-size: 1rem;
 }
 
+/* Form Inputs */
 input {
   width: 100%;
   padding: 10px;
@@ -80,7 +88,7 @@ input {
 }
 
 button {
-  background-color: var(--burnt-orange);
+  background-color: var(--primary);
   padding: 10px 15px;
   border: none;
   color: white;
@@ -89,9 +97,12 @@ button {
 
 /* Utility Classes */
 .container {
-  width: 90%;
-  max-width: 1200px;
+  /* width: auto; */
   margin: 0 auto;
+  background-color: var(--dark-background);
+  padding-left: 5%;
+  padding-right: 5%;
+  color: var(--background);
 }
 
 .flex {
@@ -137,10 +148,10 @@ button {
   margin-bottom: 2rem;
 }
 
-.mx-auto {
+/* .mx-auto {
   margin-left: auto;
   margin-right: auto;
-}
+} */
 
 /* Header */
 header {
@@ -163,14 +174,14 @@ nav ul li {
 
 nav ul li a {
   text-decoration: none;
-  color: var(--dark-brown);
+  color: var(--background);
   font-size: 1rem;
   font-weight: 600;
   transition: color 0.3s ease;
 }
 
 nav ul li a:hover {
-  color: var(--burnt-orange);
+  color: var(--secondary);
 }
 
 /* Hero Section */
@@ -186,7 +197,7 @@ nav ul li a:hover {
 .hero h1 {
   font-size: 3rem;
   font-weight: bold;
-  color: var(--very-dark-brown);
+  color: var(--primary);
   margin-bottom: 20px;
 }
 
@@ -197,8 +208,8 @@ nav ul li a:hover {
 }
 
 .hero button {
-  background-color: var(--burnt-orange);
-  color: var(--off-white);
+  background-color: var(--primary);
+  color: var(--background);
   padding: 14px 28px;
   border: none;
   border-radius: 9999px;
@@ -206,14 +217,14 @@ nav ul li a:hover {
   cursor: pointer;
   transition: background-color 0.3s ease;
   display: flex;
-  width: 9em;
   align-items: center;
   gap: 10px;
   font-weight: 600;
 }
 
 .hero button:hover {
-  background-color: #e2711fb9;
+  background-color: rgb(140, 114, 175);
+  color: var(--primary);
 }
 
 /* Features Section */
@@ -239,7 +250,6 @@ nav ul li a:hover {
   background: transparent;
   padding: 24px;
   border-radius: 12px;
-  /* box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); */
 }
 
 .feature-item h3 {
@@ -252,39 +262,10 @@ nav ul li a:hover {
   font-size: 1.1rem;
 }
 
-/* CTA Section */
-.cta {
-  background-color: var(--light-beige);
-  padding: 80px 20px;
-  text-align: center;
-}
-
-.cta h2 {
-  font-size: 2rem;
-  font-weight: bold;
-  margin-bottom: 20px;
-}
-
-.cta button {
-  background-color: var(--burnt-orange);
-  color: var(--off-white);
-  padding: 14px 28px;
-  border: none;
-  border-radius: 9999px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  font-weight: 600;
-}
-
-.cta button:hover {
-  background-color: #a10e1a;
-}
-
 /* Footer */
 footer {
   padding: 20px 0;
-  border-top: 2px solid var(--light-beige);
+  border-top: 2px solid var(--primary);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -303,12 +284,12 @@ footer nav ul li {
 
 footer nav ul li a {
   text-decoration: none;
-  color: var(--dark-brown);
+  color: var(--text);
   font-size: 1rem;
   font-weight: 600;
   transition: color 0.3s ease;
 }
 
 footer nav ul li a:hover {
-  color: var(--burnt-orange);
+  color: var(--primary);
 }
