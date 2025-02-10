@@ -4,8 +4,10 @@ import {
   verifyOtp,
   loginUser,
   getUserProfile,
+  uploadProfilePic,
 } from "../controllers/auth.controller";
 import { protect } from "../middleware/authMiddleware";
+import upload from "../middleware/upload.middleware";
 
 const router = express.Router();
 
@@ -23,6 +25,17 @@ router.post("/login", async (req, res) => {
 
 router.get("/profile", protect, async (req, res) => {
   await getUserProfile(req, res);
+});
+
+router.post("/upload-profile-pic", protect, async (req, res) => {
+  upload.single("file")(req, res, async (err) => {
+    if (err) {
+      return res
+        .status(400)
+        .json({ message: "File upload failed.", error: err.message });
+    }
+    await uploadProfilePic(req, res);
+  });
 });
 
 export default router;
