@@ -66,3 +66,7 @@
   transform: scale(1.1);
   color: #ddd;
 }
+.footer-section > h4,
+.footer-section > h3 {
+  font-size: 16px;
+}

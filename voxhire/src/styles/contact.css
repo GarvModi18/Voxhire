@@ -49,8 +49,8 @@
   padding: 10px;
   border: 1px solid var(--secondary);
   border-radius: 5px;
-  width: auto;
-  height: 1.3em;
+  min-width: 100%;
+  min-height: 1.9em;
 }
 
 .contact-card button {
@@ -64,4 +64,14 @@
 
 .contact-card button:hover {
   background: var(--secondary);
+}
+.contact-form > input,
+.contact-form > textarea {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+}
+.contact-form > textarea {
+  min-height: 5em;
+  margin-bottom: 1em;
 }

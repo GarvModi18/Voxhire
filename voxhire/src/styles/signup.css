@@ -44,8 +44,8 @@ form {
   flex-direction: column;
 }
 
-input,
-select {
+.signup-body > input,
+.signup-body > select {
   width: auto;
   padding: 12px;
   margin-bottom: 15px;

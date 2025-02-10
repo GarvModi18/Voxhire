@@ -1,11 +1,40 @@
-header {
-  /* width: auto; */
+.header-body {
+  background-color: var(--dark-background);
+  color: var(--background);
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
+.header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 15px 20px;
   background: var(--dark-background);
   color: var(--background);
+  width: 100vw; /* ✅ Expands Full Width */
+  position: fixed;
+}
+
+/* ✅ Fix Profile Alignment */
+.profile {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  gap: 10px;
+}
+
+.profile-pic {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--background);
+}
+
+.profile.active {
+  font-weight: bold;
+  color: var(--secondary);
 }
 
 nav ul {
@@ -13,29 +42,28 @@ nav ul {
   list-style: none;
   gap: 20px;
 }
-nav:hover ul:hover {
+
+nav ul li a {
+  color: var(--background);
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+nav ul li a:hover {
   color: var(--secondary);
 }
 
-.profile {
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-}
-
-.profile-pic {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  margin-right: 10px;
-}
-
+/* ✅ Fix Login Button */
 .login-btn {
   padding: 10px 15px;
   border-radius: 5px;
   color: var(--background);
   text-decoration: none;
+  transition: color 0.3s ease;
 }
+
 .login-btn:hover {
   color: var(--secondary);
 }
