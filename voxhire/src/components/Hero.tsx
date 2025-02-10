@@ -14,8 +14,8 @@ export default function Hero() {
       animate={isVisible ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.8 }}
     >
-      <h1>Master Your Interviews</h1>
-      <p>
+      <h1 className="hero-text">Master Your Interviews</h1>
+      <p className="hero-text">
         Prepare, practice, and perfect your interview skills with our AI-powered
         platform.
       </p>

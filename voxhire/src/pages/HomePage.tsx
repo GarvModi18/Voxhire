@@ -1,20 +1,20 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Hero from "../components/Hero";
 import Features from "../components/Features";
 import Team from "../components/Team";
 import Contact from "../components/Contact";
 import Footer from "../components/Footer";
+import Profile from "../pages/Profile";
+import Header from "../components/Header"; // ✅ Import Header
 import "../styles/Home.css";
 import About from "../components/About";
-import DefaultProfile from "../icons/default-profile.png";
 
 export default function Home() {
-  const navigate = useNavigate();
   const [user, setUser] = useState<{ name: string; profilePic: string } | null>(
     null
   );
+  const [activePage, setActivePage] = useState<string>("home"); // Track current page
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -25,7 +25,6 @@ export default function Home() {
         const response = await axios.get(
           "http://localhost:5000/api/auth/profile",
           {
-            // ✅ FIXED URL
             headers: { Authorization: `Bearer ${token}` },
           }
         );
@@ -35,49 +34,45 @@ export default function Home() {
         console.error("Error fetching user:", error);
       }
     };
+
     fetchUser();
+
+    // ✅ Listen for profile pic updates
+    const handleStorageChange = () => {
+      const storedUser = localStorage.getItem("user");
+      if (storedUser) {
+        setUser(JSON.parse(storedUser));
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
   }, []);
 
   return (
     <div>
-      {/* Header */}
-      <header className="container">
-        <div className="text-2xl font-bold">Voxhire</div>
-        <nav>
-          <ul>
-            <li>
-              <a href="#">Features</a>
-            </li>
-            <li>
-              <a href="#">Pricing</a>
-            </li>
-            <li>
-              <a href="#">About</a>
-            </li>
-          </ul>
-        </nav>
-        {user ? (
-          <div className="profile" onClick={() => navigate("/profile")}>
-            <img
-              src={user.profilePic || DefaultProfile}
-              alt="Profile"
-              className="profile-pic"
-            />
-            <span>{user.name}</span>
-          </div>
-        ) : (
-          <a href="/login" className="login-btn">
-            Login
-          </a>
-        )}
-      </header>
+      {/* ✅ Use Header Component */}
+      <Header
+        user={user}
+        setActivePage={setActivePage}
+        activePage={activePage}
+      />
 
-      {/* Sections */}
-      <Hero />
-      <Features />
-      <Team />
-      <About />
-      <Contact />
+      {/* ✅ Dynamically Render Sections Based on Active Page */}
+      {activePage === "profile" ? (
+        <Profile />
+      ) : (
+        <>
+          <Hero />
+          <Features />
+          <Team />
+          <About />
+          <Contact />
+        </>
+      )}
+
       <Footer />
     </div>
   );

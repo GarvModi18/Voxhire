@@ -27,7 +27,7 @@ export default function Contact() {
           transition={{ duration: 0.5 }}
         >
           <h3>Get in Touch</h3>
-          <form>
+          <form className="contact-form">
             <input type="text" placeholder="Your Name" required />
             <input type="email" placeholder="Your Email" required />
             <input type="text" placeholder="Subject" required />
