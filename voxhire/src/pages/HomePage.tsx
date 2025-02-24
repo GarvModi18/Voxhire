@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import Hero from "../components/Hero";
 import Features from "../components/Features";
@@ -6,15 +6,23 @@ import Team from "../components/Team";
 import Contact from "../components/Contact";
 import Footer from "../components/Footer";
 import Profile from "../pages/Profile";
-import Header from "../components/Header"; // ✅ Import Header
+import Header from "../components/Header";
 import About from "../components/About";
 
 export default function Home() {
-  const [user, setUser] = useState<{ name: string; profilePic: string } | null>(
-    null
-  );
-  const [activePage, setActivePage] = useState<string>("home"); // Track current page
+  const [user, setUser] = useState<{
+    name: string;
+    email: string;
+    profile_picture: string;
+  } | null>(null);
+  const [activePage, setActivePage] = useState<string>("home");
 
+  // ✅ Create Refs for Sections
+  const featuresRef = useRef<HTMLDivElement>(null);
+  const contactRef = useRef<HTMLDivElement>(null);
+  const aboutRef = useRef<HTMLDivElement>(null);
+
+  // ✅ Fetch user profile
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -36,7 +44,7 @@ export default function Home() {
 
     fetchUser();
 
-    // ✅ Listen for profile pic updates
+    // ✅ Listen for profile updates
     const handleStorageChange = () => {
       const storedUser = localStorage.getItem("user");
       if (storedUser) {
@@ -50,25 +58,40 @@ export default function Home() {
     };
   }, []);
 
+  // ✅ **Scroll Function (Ensures Smooth Scrolling)**
+  const scrollToSection = (sectionRef: React.RefObject<HTMLDivElement>) => {
+    if (sectionRef.current) {
+      sectionRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-100">
-      {/* ✅ Use Header Component */}
+      {/* ✅ Header (Pass Scroll Functions) */}
       <Header
-        user={user}
         setActivePage={setActivePage}
         activePage={activePage}
+        onFeatureClick={() => scrollToSection(featuresRef)}
+        onContactClick={() => scrollToSection(contactRef)}
+        onAboutClick={() => scrollToSection(aboutRef)}
       />
 
-      {/* ✅ Dynamically Render Sections Based on Active Page */}
+      {/* ✅ Dynamically Switch Between Profile & Main Page */}
       {activePage === "profile" ? (
         <Profile />
       ) : (
         <>
           <Hero />
-          <Features />
+          <div ref={featuresRef} id="features" className="pt-20">
+            <Features />
+          </div>
           <Team />
-          <About />
-          <Contact />
+          <div ref={aboutRef} id="about" className="pt-20">
+            <About />
+          </div>
+          <div ref={contactRef} id="contact" className="pt-20">
+            <Contact />
+          </div>
         </>
       )}
 

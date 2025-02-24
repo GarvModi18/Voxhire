@@ -8,7 +8,7 @@ export default function Profile() {
   const [user, setUser] = useState<{
     name: string;
     email: string;
-    profilePic: string;
+    profile_picture: string;
   } | null>(null);
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -16,37 +16,70 @@ export default function Profile() {
   const [message, setMessage] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  // ✅ Fetch user profile from API (not just localStorage)
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    } else {
-      navigate("/login");
-    }
+    const fetchUser = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          navigate("/login");
+          return;
+        }
+
+        const response = await axios.get(
+          "http://localhost:5000/api/auth/profile",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
+        // ✅ Update state & localStorage with latest data
+        setUser(response.data);
+        localStorage.setItem("user", JSON.stringify(response.data));
+      } catch (error) {
+        console.error("Error fetching user:", error);
+        navigate("/login");
+      }
+    };
+
+    fetchUser();
+
+    // ✅ Listen for profile updates across the app
+    const handleStorageChange = () => {
+      const storedUser = localStorage.getItem("user");
+      if (storedUser) {
+        setUser(JSON.parse(storedUser));
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
   }, [navigate]);
 
-  // Logout function
+  // ✅ Logout function
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     navigate("/login");
   };
 
-  // Open the modal when user clicks on the profile picture
+  // ✅ Open & Close Modal
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => {
     setIsModalOpen(false);
-    setSelectedFile(null); // Reset selected file on cancel
+    setSelectedFile(null);
   };
 
-  // Handle file selection
+  // ✅ Handle File Selection
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
       setSelectedFile(event.target.files[0]);
     }
   };
 
-  // Handle file upload
+  // ✅ Handle Profile Picture Upload
   const handleUpload = async () => {
     if (!selectedFile || !user) return;
 
@@ -71,27 +104,28 @@ export default function Profile() {
         }
       );
 
-      // ✅ Update user data in localStorage
-      const updatedUser = { ...user, profilePic: response.data.profilePic };
+      // ✅ Fetch updated user profile after upload
+      const updatedUser = {
+        ...user,
+        profile_picture: response.data.profilePic,
+      };
       setUser(updatedUser);
       localStorage.setItem("user", JSON.stringify(updatedUser));
 
-      // ✅ Refresh homepage profile picture
+      // ✅ Dispatch event to refresh UI across all pages
       window.dispatchEvent(new Event("storage"));
 
-      setMessage("Profile picture updated successfully!");
+      setMessage("✅ Profile picture updated successfully!");
       closeModal();
     } catch (error: any) {
-      setMessage(error.response?.data?.message || "Upload failed.");
+      setMessage(error.response?.data?.message || "❌ Upload failed.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div
-      className={`flex justify-center items-center min-h-screen bg-gray-100 ${isModalOpen ? "blur-sm" : ""}`}
-    >
+    <div className="flex justify-center items-center min-h-screen bg-gray-100">
       <div className="bg-white p-8 my-40 rounded-lg shadow-lg text-center w-96">
         <h1 className="text-3xl font-bold text-primary">Voxhire</h1>
         <h2 className="text-xl font-semibold text-gray-800 mt-2">Profile</h2>
@@ -99,7 +133,7 @@ export default function Profile() {
         {user ? (
           <div className="flex flex-col items-center mt-6">
             <img
-              src={user.profilePic || DefaultProfile}
+              src={user.profile_picture || DefaultProfile}
               alt="Profile"
               className="w-24 h-24 rounded-full cursor-pointer border-4 border-primary hover:scale-110 transition"
               onClick={openModal}
@@ -111,7 +145,7 @@ export default function Profile() {
               <strong>Email:</strong> {user.email}
             </p>
 
-            {/* Logout */}
+            {/* ✅ Logout Button */}
             <button
               className="bg-primary text-white py-2 px-4 rounded-lg mt-4 hover:bg-secondary transition"
               onClick={handleLogout}
@@ -123,7 +157,7 @@ export default function Profile() {
           <p className="text-gray-600">Loading user details...</p>
         )}
 
-        {/* Profile Picture Upload Modal */}
+        {/* ✅ Profile Picture Upload Modal */}
         {isModalOpen && (
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60">
             <div className="bg-white p-6 rounded-lg shadow-lg text-center w-96">
@@ -134,7 +168,7 @@ export default function Profile() {
                 src={
                   selectedFile
                     ? URL.createObjectURL(selectedFile)
-                    : user?.profilePic || DefaultProfile
+                    : user?.profile_picture || DefaultProfile
                 }
                 alt="Selected Preview"
                 className="w-24 h-24 rounded-full mx-auto"

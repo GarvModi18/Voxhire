@@ -18,12 +18,16 @@ export default function Login() {
         "http://localhost:5000/api/auth/login",
         formData
       );
-
+      console.log("User Role:", response.data.user.role); // Debug log
       // Save user data & token in localStorage
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("user", JSON.stringify(response.data.user));
 
-      navigate("/"); // Redirect to homepage
+      if (response.data.user.role == "Admin") {
+        navigate("/admin-dash");
+      } else {
+        navigate("/");
+      }
     } catch (err: any) {
       setError(err.response?.data?.message || "Invalid credentials");
     }
