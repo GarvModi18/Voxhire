@@ -192,8 +192,6 @@ export const createInterview = async (req: Request, res: Response) => {
 };
 
 // ✅ Fetch All Interviews
-
-// ✅ Fetch All Interviews
 export const getAllInterviews = async (req: Request, res: Response) => {
   try {
     const interviews = await InterviewSession.find().sort({ date: -1 }); // Sort by date (latest first)
@@ -205,6 +203,38 @@ export const getAllInterviews = async (req: Request, res: Response) => {
     res.status(200).json(interviews);
   } catch (error) {
     console.error("❌ Fetch Interviews Error:", error);
+    res.status(500).json({ message: "Failed to fetch interviews", error });
+  }
+};
+
+// ✅ Fetch Only Interviews Scheduled for the Logged-in Candidate
+export const getCandidateInterviews = async (req: Request, res: Response) => {
+  try {
+    if (!req.user || !req.user.email) {
+      console.warn("⚠️ Warning: Email is missing in `req.user` object.");
+      return res.status(401).json({ message: "Unauthorized - No email found" });
+    }
+
+    const candidateEmail = req.user.email; // ✅ Get logged-in user's email
+
+    // ✅ Fetch Interviews where the logged-in user's email is present in the candidates array
+    const candidateInterviews = await InterviewSession.find(
+      { "candidates.email": candidateEmail }, // ✅ Corrected query
+      {
+        title: 1,
+        date: 1,
+        time: 1,
+        duration: 1,
+        post: 1,
+      }
+    ).sort({ date: 1 });
+
+    console.log("🔍 Searching for candidate:", candidateEmail);
+    console.log("✅ Candidate Interviews Found:", candidateInterviews);
+
+    res.status(200).json(candidateInterviews);
+  } catch (error) {
+    console.error("❌ Fetch Candidate Interviews Error:", error);
     res.status(500).json({ message: "Failed to fetch interviews", error });
   }
 };
