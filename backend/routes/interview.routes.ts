@@ -5,6 +5,7 @@ import {
   uploadCandidates,
   createInterview,
   getAllInterviews,
+  getCandidateInterviews,
 } from "../controllers/interview.controller"; // ✅ Ensure createInterview is imported
 
 const router = express.Router();
@@ -24,8 +25,13 @@ router.post("/create-interview", protect, async (req, res) => {
   await createInterview(req, res);
 });
 
-// ✅ Route to Fetch All Interviews
+// ✅ Route to Fetch All Interviews for Admin
 router.get("/interviews", protect, async (req, res) => {
   await getAllInterviews(req, res);
+});
+
+// ✅ Fetch Only Scheduled Interviews for Logged-in Candidate
+router.get("/candidate-interviews", protect, async (req, res) => {
+  await getCandidateInterviews(req, res);
 });
 export default router;
