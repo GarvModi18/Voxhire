@@ -8,6 +8,7 @@ import Footer from "../components/Footer";
 import Profile from "../pages/Profile";
 import Header from "../components/Header";
 import About from "../components/About";
+import Interviews from "../components/Interviews";
 
 export default function Home() {
   const [user, setUser] = useState<{
@@ -21,6 +22,7 @@ export default function Home() {
   const featuresRef = useRef<HTMLDivElement>(null);
   const contactRef = useRef<HTMLDivElement>(null);
   const aboutRef = useRef<HTMLDivElement>(null);
+  const interviewsRef = useRef<HTMLDivElement>(null);
 
   // ✅ Fetch user profile
   useEffect(() => {
@@ -74,6 +76,7 @@ export default function Home() {
         onFeatureClick={() => scrollToSection(featuresRef)}
         onContactClick={() => scrollToSection(contactRef)}
         onAboutClick={() => scrollToSection(aboutRef)}
+        onInterviewsClick={() => scrollToSection(interviewsRef)}
       />
 
       {/* ✅ Dynamically Switch Between Profile & Main Page */}
@@ -82,6 +85,9 @@ export default function Home() {
       ) : (
         <>
           <Hero />
+          <div ref={interviewsRef} id="interviews" className="pt-20">
+            <Interviews />
+          </div>
           <div ref={featuresRef} id="features" className="pt-20">
             <Features />
           </div>
