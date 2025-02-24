@@ -33,24 +33,24 @@ export default function Contact() {
               type="text"
               placeholder="Your Name"
               required
-              className="border border-secondary p-3 rounded-md"
+              className="border border-secondary p-2 rounded-md"
             />
             <input
               type="email"
               placeholder="Your Email"
               required
-              className="border border-secondary p-3 rounded-md"
+              className="border border-secondary p-2 rounded-md"
             />
             <input
               type="text"
               placeholder="Subject"
               required
-              className="border border-secondary p-3 rounded-md"
+              className="border border-secondary p-2 rounded-md"
             />
             <textarea
               placeholder="Message"
               required
-              className="border border-secondary p-3 rounded-md h-32"
+              className="border border-secondary p-2 rounded-md h-24"
             ></textarea>
             <button
               type="submit"
@@ -77,7 +77,7 @@ export default function Contact() {
             title="Google Map"
             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3671.9243206047304!2d72.55662027282354!3d23.026550779170954!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395e84f07cf71307%3A0x804503470ffe80ea!2sGLS%20University!5e0!3m2!1sen!2sin!4v1738572344225!5m2!1sen!2sin"
             width="100%"
-            height="300"
+            height="250"
             className="border-none mb-4"
             allowFullScreen
           ></iframe>
