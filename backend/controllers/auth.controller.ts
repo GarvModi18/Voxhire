@@ -78,9 +78,11 @@ export const loginUser = async (req: Request, res: Response) => {
     if (!user || !(await bcrypt.compare(password, user.password)))
       return res.status(400).json({ message: "Invalid credentials" });
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET!, {
-      expiresIn: "7d",
-    });
+    const token = jwt.sign(
+      { id: user._id, email: user.email },
+      process.env.JWT_SECRET!,
+      { expiresIn: "7d" }
+    );
 
     res.json({
       token,
@@ -135,6 +137,11 @@ export const uploadProfilePic = async (req: Request, res: Response) => {
 export const getUserProfile = async (req: Request, res: Response) => {
   try {
     const user = await User.findById(req.user!.id).select("-password");
+    console.log("👤 User Profile:", user);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
     res.json(user);
   } catch (error) {
     res.status(500).json({ message: "Error fetching profile", error });
