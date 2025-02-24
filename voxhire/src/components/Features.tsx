@@ -10,7 +10,6 @@ import {
   ShieldCheck,
   FileText,
 } from "lucide-react";
-import "../styles/features.css";
 
 export default function Features() {
   const { ref, isVisible } = useInView();
@@ -63,30 +62,52 @@ export default function Features() {
   return (
     <motion.section
       ref={ref}
-      className="features-container"
       initial={{ opacity: 0, y: 50 }}
       animate={isVisible ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.8 }}
+      transition={{ duration: 0.9, ease: "easeOut" }}
+      className="max-w-6xl mx-auto px-6 py-16 text-center"
     >
-      <h2 className="features-title">Why Choose Voxhire?</h2>
+      <motion.h2
+        initial={{ opacity: 0, y: -20 }}
+        animate={isVisible ? { opacity: 1, y: 0 } : {}}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        className="text-4xl font-bold text-primary mb-8"
+      >
+        Why Choose Voxhire?
+      </motion.h2>
 
-      {/* 2-row × 4-column grid */}
-      <div className="features-grid">
+      {/* Grid Layout for Features */}
+      <motion.div
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+        initial="hidden"
+        animate={isVisible ? "visible" : "hidden"}
+        variants={{
+          hidden: { opacity: 0 },
+          visible: {
+            opacity: 1,
+            transition: { staggerChildren: 0.2 },
+          },
+        }}
+      >
         {features.map((feature, index) => (
           <motion.div
             key={index}
-            className="feature-card"
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={isVisible ? { opacity: 1, scale: 1 } : {}}
-            transition={{ delay: index * 0.1, duration: 0.4 }}
-            whileHover={{ scale: 1.05 }}
+            variants={{
+              hidden: { opacity: 0, y: 30, scale: 0.9 },
+              visible: { opacity: 1, y: 0, scale: 1 },
+            }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            whileHover={{ scale: 1.05, transition: { duration: 0.3 } }}
+            className="bg-white p-6 rounded-xl shadow-lg text-center transform transition-all duration-300 hover:shadow-2xl"
           >
-            <feature.icon className="feature-icon" />
-            <h3 className="feature-title">{feature.title}</h3>
-            <p className="feature-description">{feature.description}</p>
+            <feature.icon className="text-primary w-14 h-14 mx-auto mb-4 transition-transform transform hover:rotate-6" />
+            <h3 className="text-xl font-semibold text-primary">
+              {feature.title}
+            </h3>
+            <p className="text-sm text-gray-600 mt-2">{feature.description}</p>
           </motion.div>
         ))}
-      </div>
+      </motion.div>
     </motion.section>
   );
 }

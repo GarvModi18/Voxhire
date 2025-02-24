@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import "../styles/Signup.css";
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -85,16 +84,15 @@ const Signup = () => {
   };
 
   return (
-    <div className="signup-body">
-      <div className="signup-container">
-        {/* <h1 className="voxhire-title">Voxhire</h1> */}
-        <h2>Sign Up</h2>
+    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+      <div className="bg-white p-8 rounded-lg shadow-lg w-96 text-center">
+        <h2 className="text-2xl font-bold text-primary mb-4">Sign Up</h2>
 
-        {error && <p className="error-message">{error}</p>}
-        {message && <p className="success-message">{message}</p>}
+        {error && <p className="text-red-500 mb-2">{error}</p>}
+        {message && <p className="text-green-500 mb-2">{message}</p>}
 
         {!isOtpSent ? (
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} className="space-y-4">
             <input
               type="text"
               name="name"
@@ -102,6 +100,7 @@ const Signup = () => {
               onChange={handleChange}
               placeholder="Name"
               required
+              className="w-full p-3 border border-gray-300 rounded-lg"
             />
             <input
               type="email"
@@ -110,6 +109,7 @@ const Signup = () => {
               onChange={handleChange}
               placeholder="Email"
               required
+              className="w-full p-3 border border-gray-300 rounded-lg"
             />
             <input
               type="password"
@@ -118,22 +118,28 @@ const Signup = () => {
               onChange={handleChange}
               placeholder="Password"
               required
+              className="w-full p-3 border border-gray-300 rounded-lg"
             />
             <select
               name="role"
               value={formData.role}
               onChange={handleChange}
               required
+              className="w-full p-3 border border-gray-300 rounded-lg"
             >
               <option value="Candidate">Candidate</option>
               <option value="Admin">Admin</option>
             </select>
-            <button type="submit" disabled={loading}>
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-primary text-white py-2 rounded-lg hover:bg-secondary transition"
+            >
               {loading ? "Sending..." : "Send OTP"}
             </button>
           </form>
         ) : (
-          <form onSubmit={handleOtpSubmit}>
+          <form onSubmit={handleOtpSubmit} className="space-y-4">
             <input
               type="text"
               name="otp"
@@ -141,21 +147,29 @@ const Signup = () => {
               onChange={(e) => setOtp(e.target.value)}
               placeholder="Enter OTP"
               required
+              className="w-full p-3 border border-gray-300 rounded-lg"
             />
-            <p>
+            <p className="text-gray-600">
               OTP Expires In: {Math.floor(otpCountdown / 60)}:
               {otpCountdown % 60}
             </p>
-            <button type="submit" disabled={loading}>
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-primary text-white py-2 rounded-lg hover:bg-secondary transition"
+            >
               {loading ? "Verifying..." : "Verify OTP"}
             </button>
           </form>
         )}
 
         {/* Login link */}
-        <p className="login-text">
+        <p className="mt-4 text-gray-600">
           Already have an account?{" "}
-          <button className="login-button" onClick={() => navigate("/login")}>
+          <button
+            className="text-primary font-bold hover:text-secondary transition"
+            onClick={() => navigate("/login")}
+          >
             Login here!
           </button>
         </p>

@@ -7,7 +7,6 @@ import Contact from "../components/Contact";
 import Footer from "../components/Footer";
 import Profile from "../pages/Profile";
 import Header from "../components/Header"; // ✅ Import Header
-import "../styles/Home.css";
 import About from "../components/About";
 
 export default function Home() {
@@ -52,7 +51,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div>
+    <div className="min-h-screen bg-gray-100">
       {/* ✅ Use Header Component */}
       <Header
         user={user}

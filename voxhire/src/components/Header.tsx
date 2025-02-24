@@ -1,18 +1,26 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import DefaultProfile from "../icons/default-profile.png";
-import "../styles/header.css";
 
 interface HeaderProps {
-  user: { name: string; profilePic: string } | null;
   setActivePage: (page: string) => void;
   activePage: string;
+  onFeatureClick: () => void;
+  onContactClick: () => void;
+  onAboutClick: () => void;
 }
 
-export default function Header({ setActivePage, activePage }: HeaderProps) {
-  const [user, setUser] = useState<{ name: string; profilePic: string } | null>(
-    null
-  );
+export default function Header({
+  setActivePage,
+  activePage,
+  onFeatureClick,
+  onContactClick,
+  onAboutClick,
+}: HeaderProps) {
+  const [user, setUser] = useState<{
+    name: string;
+    profile_picture: string;
+  } | null>(null);
 
   // ✅ Fetch user from localStorage (Ensure latest profile pic)
   useEffect(() => {
@@ -21,7 +29,7 @@ export default function Header({ setActivePage, activePage }: HeaderProps) {
       setUser(JSON.parse(storedUser));
     }
 
-    // ✅ Listen for changes to localStorage (Ensures Profile Pic Updates)
+    // ✅ Listen for profile updates
     const handleStorageChange = () => {
       const updatedUser = localStorage.getItem("user");
       if (updatedUser) {
@@ -34,61 +42,93 @@ export default function Header({ setActivePage, activePage }: HeaderProps) {
   }, []);
 
   return (
-    <header className="header-body">
-      <div className="logo">
+    <header className="w-full bg-dark-background text-white px-6 py-4 flex justify-between items-center fixed top-0 z-50 shadow-md">
+      {/* ✅ Logo */}
+      <div>
         <a
           href="#"
           onClick={() => setActivePage("home")}
-          className={activePage === "home" ? "active" : ""}
+          className={`text-2xl font-bold transition ${
+            activePage === "home" ? "text-secondary" : "text-white"
+          }`}
         >
-          <h1> Voxhire</h1>
+          Voxhire
         </a>
       </div>
+
+      {/* ✅ Navigation Menu */}
       <nav>
-        <ul>
+        <ul className="flex gap-6">
           <li>
-            <a
-              href="#"
-              onClick={() => setActivePage("features")}
-              className={activePage === "features" ? "active" : ""}
+            <button
+              onClick={() => {
+                onFeatureClick();
+                setActivePage("features");
+              }}
+              className={`text-lg font-semibold transition ${
+                activePage === "features"
+                  ? "text-secondary"
+                  : "hover:text-secondary"
+              }`}
             >
               Features
-            </a>
+            </button>
           </li>
           <li>
-            <a
-              href="#"
-              onClick={() => setActivePage("contact")}
-              className={activePage === "contact" ? "active" : ""}
+            <button
+              onClick={() => {
+                onContactClick();
+                setActivePage("contact");
+              }}
+              className={`text-lg font-semibold transition ${
+                activePage === "contact"
+                  ? "text-secondary"
+                  : "hover:text-secondary"
+              }`}
             >
               Contact
-            </a>
+            </button>
           </li>
           <li>
-            <a
-              href="#"
-              onClick={() => setActivePage("about")}
-              className={activePage === "about" ? "active" : ""}
+            <button
+              onClick={() => {
+                onAboutClick();
+                setActivePage("about");
+              }}
+              className={`text-lg font-semibold transition ${
+                activePage === "about"
+                  ? "text-secondary"
+                  : "hover:text-secondary"
+              }`}
             >
               About
-            </a>
+            </button>
           </li>
         </ul>
       </nav>
+
+      {/* ✅ Profile or Login */}
       {user ? (
         <div
-          className={`profile ${activePage === "profile" ? "active" : ""}`}
+          className={`flex items-center gap-3 cursor-pointer ${
+            activePage === "profile" ? "text-secondary font-bold" : ""
+          }`}
           onClick={() => setActivePage("profile")}
         >
           <img
-            src={user.profilePic || DefaultProfile}
+            src={user.profile_picture || DefaultProfile}
             alt="Profile"
-            className="profile-pic"
+            className="w-12 h-12 rounded-full object-cover border-2 border-white"
           />
-          <span>{user.name}</span>
+          <span className="text-lg font-semibold hover:text-secondary">
+            {user.name}
+          </span>
         </div>
       ) : (
-        <Link to="/login" className="login-btn">
+        <Link
+          to="/login"
+          className="px-4 py-2 rounded-md border border-white hover:border-secondary transition"
+        >
           Login
         </Link>
       )}

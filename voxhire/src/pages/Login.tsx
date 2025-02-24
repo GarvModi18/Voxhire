@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import "../styles/Login.css";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -31,11 +30,13 @@ export default function Login() {
   };
 
   return (
-    <div className="login-body">
-      <div className="login-container">
-        <h2>Login</h2>
-        {error && <p className="error-message">{error}</p>}
-        <form onSubmit={handleSubmit}>
+    <div className="flex justify-center items-center h-screen bg-gray-100">
+      <div className="bg-white p-8 w-96 rounded-lg shadow-lg text-center">
+        <h2 className="text-3xl font-bold text-primary mb-6">Login</h2>
+        {error && <p className="text-red-500 mb-4">{error}</p>}
+
+        {/* Login Form */}
+        <form onSubmit={handleSubmit} className="flex flex-col">
           <input
             type="email"
             name="email"
@@ -43,6 +44,7 @@ export default function Login() {
             value={formData.email}
             onChange={handleChange}
             required
+            className="p-3 mb-4 border border-primary rounded-lg text-lg"
           />
           <input
             type="password"
@@ -51,14 +53,23 @@ export default function Login() {
             value={formData.password}
             onChange={handleChange}
             required
+            className="p-3 mb-4 border border-primary rounded-lg text-lg"
           />
-          <button type="submit">Login</button>
+          <button
+            type="submit"
+            className="bg-primary text-white py-3 rounded-lg text-lg font-semibold hover:bg-secondary transition"
+          >
+            Login
+          </button>
         </form>
 
-        {/* Sign-up link */}
-        <p className="signup-text">
+        {/* Sign-up Section */}
+        <p className="mt-4 text-gray-600">
           Don't have an account?{" "}
-          <button className="signup-btn" onClick={() => navigate("/signup")}>
+          <button
+            className="text-primary font-semibold hover:text-secondary transition"
+            onClick={() => navigate("/signup")}
+          >
             Sign up here!
           </button>
         </p>
