@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import DefaultProfile from "../icons/default-profile.png";
-
 interface HeaderProps {
   setActivePage: (page: string) => void;
   activePage: string;
   onFeatureClick: () => void;
   onContactClick: () => void;
   onAboutClick: () => void;
+  onInterviewsClick: () => void;
 }
 
 export default function Header({
@@ -16,6 +16,7 @@ export default function Header({
   onFeatureClick,
   onContactClick,
   onAboutClick,
+  onInterviewsClick,
 }: HeaderProps) {
   const [user, setUser] = useState<{
     name: string;
@@ -46,10 +47,10 @@ export default function Header({
       {/* ✅ Logo */}
       <div>
         <a
-          href="#"
+          href="/"
           onClick={() => setActivePage("home")}
-          className={`text-2xl font-bold transition ${
-            activePage === "home" ? "text-secondary" : "text-white"
+          className={`text-3xl text-white font-bold transition ${
+            activePage === "home" ? "text-white" : "text-secondary"
           }`}
         >
           Voxhire
@@ -62,31 +63,27 @@ export default function Header({
           <li>
             <button
               onClick={() => {
-                onFeatureClick();
-                setActivePage("features");
+                onInterviewsClick();
+                setActivePage("interviews");
               }}
               className={`text-lg font-semibold transition ${
-                activePage === "features"
-                  ? "text-secondary"
-                  : "hover:text-secondary"
+                activePage === "" ? "text-secondary" : "hover:text-secondary"
               }`}
             >
-              Features
+              Interviews
             </button>
           </li>
           <li>
             <button
               onClick={() => {
-                onContactClick();
-                setActivePage("contact");
+                onFeatureClick();
+                setActivePage("features");
               }}
               className={`text-lg font-semibold transition ${
-                activePage === "contact"
-                  ? "text-secondary"
-                  : "hover:text-secondary"
+                activePage === "" ? "text-secondary" : "hover:text-secondary"
               }`}
             >
-              Contact
+              Features
             </button>
           </li>
           <li>
@@ -96,12 +93,23 @@ export default function Header({
                 setActivePage("about");
               }}
               className={`text-lg font-semibold transition ${
-                activePage === "about"
-                  ? "text-secondary"
-                  : "hover:text-secondary"
+                activePage === "" ? "text-secondary" : "hover:text-secondary"
               }`}
             >
               About
+            </button>
+          </li>
+          <li>
+            <button
+              onClick={() => {
+                onContactClick();
+                setActivePage("contact");
+              }}
+              className={`text-lg font-semibold transition ${
+                activePage === "" ? "text-secondary" : "hover:text-secondary"
+              }`}
+            >
+              Contact
             </button>
           </li>
         </ul>
@@ -111,7 +119,7 @@ export default function Header({
       {user ? (
         <div
           className={`flex items-center gap-3 cursor-pointer ${
-            activePage === "profile" ? "text-secondary font-bold" : ""
+            activePage === "" ? "text-secondary font-bold" : ""
           }`}
           onClick={() => setActivePage("profile")}
         >
