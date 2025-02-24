@@ -7,7 +7,14 @@ import {
   uploadProfilePic,
 } from "../controllers/auth.controller";
 import { protect } from "../middleware/authMiddleware";
-import upload from "../middleware/upload.middleware";
+import {
+  uploadProfile,
+  uploadInterview,
+} from "../middleware/upload.middleware";
+import {
+  createInterview,
+  uploadCandidates,
+} from "../controllers/interview.controller";
 
 const router = express.Router();
 
@@ -28,7 +35,7 @@ router.get("/profile", protect, async (req, res) => {
 });
 
 router.post("/upload-profile-pic", protect, async (req, res) => {
-  upload.single("file")(req, res, async (err) => {
+  uploadProfile.single("file")(req, res, async (err) => {
     if (err) {
       return res
         .status(400)

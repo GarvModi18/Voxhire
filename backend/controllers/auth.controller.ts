@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
+import cloudinary from "../config/cloudinary";
 
 dotenv.config();
 
@@ -88,6 +89,7 @@ export const loginUser = async (req: Request, res: Response) => {
         name: user.name,
         email: user.email,
         profile_picture: user.profile_picture || "",
+        role: user.role,
       },
     });
   } catch (error) {
@@ -97,28 +99,38 @@ export const loginUser = async (req: Request, res: Response) => {
 interface CustomRequest extends Request {
   file?: Express.Multer.File;
 }
-// ✅ **Upload Profile Picture**
-export const uploadProfilePic = async (req: CustomRequest, res: Response) => {
+// ✅ Upload Profile Picture & Update MongoDB
+export const uploadProfilePic = async (req: Request, res: Response) => {
   try {
-    if (!req.file)
-      return res.status(400).json({ message: "No file provided." });
+    if (!req.file) {
+      return res.status(400).json({ message: "❌ No file uploaded." });
+    }
 
-    const user = await User.findByIdAndUpdate(
+    // ✅ Upload Image to Cloudinary
+    const result = await cloudinary.uploader.upload(req.file.path, {
+      folder: "profile_pictures",
+      resource_type: "image",
+    });
+
+    // ✅ Update MongoDB with new Cloudinary URL
+    const updatedUser = await User.findByIdAndUpdate(
       req.user!.id,
-      { profile_picture: req.file.path }, // ✅ Save Cloudinary URL
-      { new: true }
+      { profile_picture: result.secure_url },
+      { new: true } // ✅ Return updated user
     );
 
-    if (!user) return res.status(404).json({ message: "User not found." });
+    if (!updatedUser) {
+      return res.status(404).json({ message: "❌ User not found." });
+    }
 
-    res.json({ profilePic: user.profile_picture });
+    res.json({ profilePic: updatedUser.profile_picture });
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "File upload failed.", error: error.message });
+    res.status(500).json({
+      message: "❌ Profile picture upload failed.",
+      error: error.message,
+    });
   }
 };
-
 // ✅ **Get Profile**
 export const getUserProfile = async (req: Request, res: Response) => {
   try {

@@ -2,16 +2,41 @@ import multer from "multer";
 import { CloudinaryStorage } from "multer-storage-cloudinary";
 import cloudinary from "../config/cloudinary";
 
-// ✅ Correct Cloudinary Storage Configuration
-const storage = new CloudinaryStorage({
+// ✅ Storage for Profile Pictures
+const profileStorage = new CloudinaryStorage({
   cloudinary,
   params: async (req, file) => ({
     folder: "profile_pictures",
-    format: file.mimetype.split("/")[1], // ✅ Extract file format dynamically
-    public_id: `${Date.now()}-${file.originalname.split(".")[0]}`, // ✅ Unique filename
+    format: file.mimetype.split("/")[1],
+    public_id: `${Date.now()}-${file.originalname.split(".")[0]}`,
   }),
 });
 
-const upload = multer({ storage });
+// ✅ Storage for Candidate List (Excel / PDF)
+const candidateStorage = new CloudinaryStorage({
+  cloudinary,
+  params: async (req, file) => {
+    console.log("🔍 Middleware File Details:", {
+      originalname: file.originalname,
+      mimetype: file.mimetype,
+    });
 
-export default upload;
+    if (
+      !file.mimetype.includes("spreadsheet") &&
+      !file.mimetype.includes("pdf")
+    ) {
+      console.error("❌ Unsupported File Type:", file.mimetype);
+      throw new Error("Only PDF and Excel files are allowed.");
+    }
+
+    return {
+      folder: "Candidates_List",
+      resource_type: "raw",
+      format: file.mimetype.split("/")[1],
+      public_id: `candidates_${Date.now()}_${file.originalname}`,
+    };
+  },
+});
+
+export const uploadProfile = multer({ storage: profileStorage });
+export const uploadInterview = multer({ storage: candidateStorage });

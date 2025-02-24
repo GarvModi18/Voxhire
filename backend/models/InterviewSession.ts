@@ -1,35 +1,40 @@
-// interviewSession.ts
 import mongoose, { Schema, Document } from "mongoose";
 
-export interface IInterviewSession extends Document {
-  candidate_id: mongoose.Types.ObjectId;
+export interface IInterview extends Document {
+  title: string;
+  created_by: mongoose.Types.ObjectId;
+  difficulty: "Easy" | "Medium" | "Hard";
   date: Date;
   time: string;
-  difficulty: string;
   duration: string;
   post: string;
-  session_logs: string[];
+  candidates: { name: string; email: string }[];
+  additional_notes?: string;
 }
 
-const InterviewSessionSchema: Schema = new Schema({
-  candidate_id: {
+const InterviewSchema: Schema = new Schema({
+  title: { type: String, required: true },
+  created_by: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Candidate",
+    ref: "User",
     required: true,
   },
-  date: { type: Date, required: true },
-  time: { type: String, required: true },
   difficulty: {
     type: String,
     enum: ["Easy", "Medium", "Hard"],
     required: true,
   },
+  date: { type: Date, required: true },
+  time: { type: String, required: true },
   duration: { type: String, required: true },
   post: { type: String, required: true },
-  session_logs: [{ type: String }],
+  candidates: [
+    {
+      name: { type: String, required: true },
+      email: { type: String, required: true },
+    },
+  ],
+  additional_notes: { type: String },
 });
 
-export default mongoose.model<IInterviewSession>(
-  "InterviewSession",
-  InterviewSessionSchema
-);
+export default mongoose.model<IInterview>("Interview", InterviewSchema);

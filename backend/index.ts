@@ -4,6 +4,7 @@ import bodyParser from "body-parser";
 import authRoutes from "./routes/auth.routes";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import interviewRoutes from "./routes/interview.routes";
 
 dotenv.config();
 
@@ -22,6 +23,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // ✅ Register Routes BEFORE starting the server
 app.use("/api/auth", authRoutes);
+app.use("/api/interview", interviewRoutes);
 
 // ✅ Print Registered Routes (Debugging)
 app._router.stack.forEach((r) => {
