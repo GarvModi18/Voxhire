@@ -13,8 +13,10 @@ export default function CreateInterview() {
 
   const [file, setFile] = useState<File | null>(null);
   const [uploadMessage, setUploadMessage] = useState("");
+  const [createMessage, setCreateMessage] = useState("");
   const [fileUrl, setFileUrl] = useState("");
   const [candidateEmails, setCandidateEmails] = useState<string[]>([]);
+  const [candidateNames, setCandidateNames] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false); // ✅ Success Modal State
 
@@ -52,6 +54,7 @@ export default function CreateInterview() {
 
       setFileUrl(response.data.fileUrl);
       setCandidateEmails(response.data.candidateEmails);
+      setCandidateNames(response.data.candidateNames);
       setUploadMessage("✅ File uploaded successfully!");
     } catch (error) {
       console.error("❌ Upload failed:", error);
@@ -61,7 +64,8 @@ export default function CreateInterview() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!fileUrl) return alert("Please upload a candidate file first!");
+    if (!fileUrl || !file)
+      return setCreateMessage("Please upload a candidate file first!");
 
     setLoading(true);
     try {
@@ -70,6 +74,7 @@ export default function CreateInterview() {
         {
           ...interviewData,
           candidateEmails,
+          candidateNames,
         },
         {
           headers: {
@@ -82,7 +87,7 @@ export default function CreateInterview() {
       setShowSuccessModal(true); // ✅ Show Success Modal
     } catch (error) {
       console.error("❌ Interview creation failed:", error);
-      alert("❌ Interview creation failed.");
+      setCreateMessage("❌ Interview creation failed.");
     }
     setLoading(false);
   };
@@ -106,7 +111,9 @@ export default function CreateInterview() {
         >
           Upload File
         </button>
-        {uploadMessage && <p className="mt-2 text-red-600">{uploadMessage}</p>}
+        {uploadMessage && (
+          <p className="mt-2 text-text2-600">{uploadMessage}</p>
+        )}
       </div>
 
       {/* ✅ Interview Form */}
@@ -169,6 +176,9 @@ export default function CreateInterview() {
         >
           {loading ? "Processing..." : "Create Interview"}
         </button>
+        {createMessage && (
+          <p className="mt-2 text-text2-600">{createMessage}</p>
+        )}
       </form>
 
       {/* ✅ Success Modal */}

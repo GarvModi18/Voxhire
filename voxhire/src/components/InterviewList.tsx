@@ -56,7 +56,7 @@ export default function InterviewList() {
                 </p>
                 <p>
                   <strong className="text-primary">📅 Date:</strong>{" "}
-                  {interview.date}
+                  {interview.date.slice(0, 10)}
                 </p>
                 <p>
                   <strong className="text-primary">⏰ Time:</strong>{" "}

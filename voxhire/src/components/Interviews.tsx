@@ -106,7 +106,7 @@ export default function Interviews() {
                 <div className="text-gray-600 space-y-2">
                   <p className="flex items-center">
                     <Calendar className="text-secondary w-5 h-5 mr-2" />
-                    <strong>Date:</strong> {interview.date}
+                    <strong>Date:</strong> {interview.date.slice(0, 10)}
                   </p>
                   <p className="flex items-center">
                     <Clock className="text-secondary w-5 h-5 mr-2" />

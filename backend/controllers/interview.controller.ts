@@ -54,7 +54,7 @@ export const uploadCandidates = async (req: Request, res: Response) => {
     // console.log("✅ File Saved in Database");
 
     let candidateEmails: string[] = [];
-
+    let candidateNames: string[] = [];
     // ✅ **Download File from Cloudinary Before Processing**
     // console.log("⏳ Downloading file from Cloudinary...");
     const fileResponse = await axios.get(result.secure_url, {
@@ -76,10 +76,12 @@ export const uploadCandidates = async (req: Request, res: Response) => {
         console.error("❌ Excel File is Empty");
         return res.status(400).json({ message: "Excel file is empty." });
       }
-
+      console.log("📊 Excel Data :", data);
       candidateEmails = data
         .map((row: any) => row.Email)
         .filter((email: string) => email);
+
+      candidateNames = data.map((row: any) => row.Name);
     }
 
     // ✅ **Extract Emails from PDF**
@@ -96,6 +98,7 @@ export const uploadCandidates = async (req: Request, res: Response) => {
     }
 
     console.log(`📧 Extracted Emails: ${candidateEmails.join(", ")}`);
+    console.log("Extracted Names:", candidateNames);
 
     if (candidateEmails.length === 0) {
       // console.error("❌ No Valid Emails Found in the File");
@@ -109,6 +112,7 @@ export const uploadCandidates = async (req: Request, res: Response) => {
       message: "File uploaded successfully!",
       fileUrl: result.secure_url,
       candidateEmails,
+      candidateNames,
     });
   } catch (error) {
     console.error("❌ Upload Candidates Error:", {
@@ -132,6 +136,7 @@ export const createInterview = async (req: Request, res: Response) => {
       date,
       time,
       candidateEmails,
+      candidateNames,
       additionalNotes,
     } = req.body;
 
@@ -156,8 +161,8 @@ export const createInterview = async (req: Request, res: Response) => {
       duration,
       date,
       time,
-      candidates: candidateEmails.map((email: string) => ({
-        name: "Candidate",
+      candidates: candidateEmails.map((email: string, index: string) => ({
+        name: candidateNames[index],
         email,
       })), // ✅ Save Emails
       additional_notes: additionalNotes,
