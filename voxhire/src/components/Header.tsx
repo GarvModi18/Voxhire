@@ -7,7 +7,7 @@ interface HeaderProps {
   onFeatureClick: () => void;
   onContactClick: () => void;
   onAboutClick: () => void;
-  onInterviewsClick: () => void;
+  onMyInterviewsClick: () => void;
 }
 
 export default function Header({
@@ -16,7 +16,7 @@ export default function Header({
   onFeatureClick,
   onContactClick,
   onAboutClick,
-  onInterviewsClick,
+  onMyInterviewsClick,
 }: HeaderProps) {
   const [user, setUser] = useState<{
     name: string;
@@ -63,7 +63,7 @@ export default function Header({
           <li>
             <button
               onClick={() => {
-                onInterviewsClick();
+                onMyInterviewsClick();
                 setActivePage("interviews");
               }}
               className={`text-lg font-semibold transition ${
