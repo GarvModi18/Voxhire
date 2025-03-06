@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
-
+import Lottie from "lottie-react";
+import LoadingAnimation from "../icons/LoadingAnimation.json";
 export default function CreateInterview() {
   const [interviewData, setInterviewData] = useState({
     post: "",
@@ -180,6 +181,15 @@ export default function CreateInterview() {
           <p className="mt-2 text-text2-600">{createMessage}</p>
         )}
       </form>
+      {/* ✅ Floating Loading Animation */}
+      {loading && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg text-center w-80">
+            <Lottie animationData={LoadingAnimation} loop={true} />
+            <p className="text-gray-700 mt-2">Creating Interview...</p>
+          </div>
+        </div>
+      )}
 
       {/* ✅ Success Modal */}
       {showSuccessModal && (
