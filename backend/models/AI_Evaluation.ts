@@ -1,31 +1,35 @@
-// aiEvaluation.ts
+// AI_Evaluation.ts
 import mongoose, { Schema, Document } from "mongoose";
 
-export interface IAI_Evaluation extends Document {
+export interface IAIEvaluation extends Document {
+  interview_id?: mongoose.Types.ObjectId;
   candidate_id: mongoose.Types.ObjectId;
-  interview_score: number;
-  technical_score: number;
-  ai_feedback: string;
-  final_decision: "Pass" | "Fail" | "Pending";
+  question: string;
+  answer?: string;
+  type: string;
+  score: number;
+  summary: string;
+  timestamp: Date;
 }
 
 const AIEvaluationSchema: Schema = new Schema({
+  interview_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "InterviewSession",
+  },
   candidate_id: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Candidate",
+    ref: "User",
     required: true,
   },
-  interview_score: { type: Number, required: true },
-  technical_score: { type: Number, required: true },
-  ai_feedback: { type: String, required: true },
-  final_decision: {
-    type: String,
-    enum: ["Pass", "Fail", "Pending"],
-    required: true,
-  },
+  question: { type: String, required: true },
+  answer: { type: String },
+  score: { type: Number, required: true }, // 0-100 score
+  summary: { type: String, required: true },
+  timestamp: { type: Date, default: Date.now },
 });
 
-export default mongoose.model<IAI_Evaluation>(
+export default mongoose.model<IAIEvaluation>(
   "AI_Evaluation",
   AIEvaluationSchema
 );

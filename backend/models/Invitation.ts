@@ -7,6 +7,8 @@ export interface IInvitation extends Document {
   email: string;
   token: string;
   used: boolean;
+  expiry_date: Date;
+  created_at: Date;
 }
 
 const InvitationSchema: Schema = new Schema({
@@ -18,6 +20,12 @@ const InvitationSchema: Schema = new Schema({
   email: { type: String, required: true },
   token: { type: String, default: () => crypto.randomUUID() },
   used: { type: Boolean, default: false },
+  expiry_date: {
+    type: Date,
+    required: true,
+    default: () => new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days from now
+  },
+  created_at: { type: Date, default: Date.now },
 });
 
 export default mongoose.model<IInvitation>("Invitation", InvitationSchema);
