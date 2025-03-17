@@ -3,36 +3,74 @@ import axios from "axios";
 import { motion } from "framer-motion";
 import { useInView } from "../hooks/UseInView";
 import { Calendar, Clock, FileText } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
+// ✅ Define Interview Type
+interface Interview {
+  _id: string;
+  title: string;
+  date: string;
+  time: string;
+  duration: string;
+  post: string;
+}
+
+// ✅ Fix `useNavigate`
 export default function MyInterviews() {
+  const navigate = useNavigate();
   const { ref, isVisible } = useInView();
-  const [Myinterviews, setMyInterviews] = useState([]);
+  const [Myinterviews, setMyInterviews] = useState<Interview[]>([]);
   const [sessionId, setSessionId] = useState("");
+  const [loading, setLoading] = useState<boolean>(true); // ✅ Fix setLoading
+
+  // ✅ Fetch All Interviews (Fix API call)
   useEffect(() => {
-    const fetchCandidateMyInterviews = async () => {
+    const fetchInterviews = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:5000/api/interview/candidate-interviews",
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
+        const token = localStorage.getItem("token");
+        if (!token) {
+          console.error("❌ No authentication token found!");
+          return;
+        }
+
+        const { data } = await axios.get(
+          `http://localhost:5000/api/interview/candidate-interviews`, // ✅ Correct API URL
+          { headers: { Authorization: `Bearer ${token}` } }
         );
 
-        setMyInterviews(response.data);
+        console.log("✅ Fetched interviews:", data);
+        setMyInterviews(data);
       } catch (error) {
-        console.error("❌ Failed to fetch candidate interviews:", error);
+        console.error("❌ Error fetching interviews:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetchCandidateMyInterviews();
+    fetchInterviews();
   }, []);
 
   // ✅ Handle Join Interview
   const handleJoinInterview = (id: string) => {
-    alert(`Joining interview: ${id}`);
-    // Redirect or handle interview joining logic
+    navigate(`/interview/${id}`); // ✅ Redirect to correct interview page
+  };
+
+  // ✅ Handle Search Interview (Fix TypeScript issue)
+  const handleSearchInterview = () => {
+    if (!sessionId.trim()) return;
+
+    const scoredInterviews = Myinterviews.map((interview: Interview) => {
+      let score = 0;
+      if (interview._id.includes(sessionId)) score += 10;
+      if (interview.post.toLowerCase().includes(sessionId.toLowerCase()))
+        score += 5;
+      if (interview.title.toLowerCase().includes(sessionId.toLowerCase()))
+        score += 3;
+      return { ...interview, score };
+    });
+
+    const sortedInterviews = scoredInterviews.sort((a, b) => b.score - a.score);
+    setMyInterviews(sortedInterviews);
   };
 
   return (
@@ -43,84 +81,70 @@ export default function MyInterviews() {
       transition={{ duration: 0.9, ease: "easeOut" }}
       className="max-w-6xl mx-auto px-6 py-16"
     >
-      {/* ✅ Session ID Input & Join Button */}
+      {/* ✅ Search Input */}
       <div className="flex items-center justify-center space-x-4 mb-8">
         <input
           type="text"
           value={sessionId}
           onChange={(e) => setSessionId(e.target.value)}
-          placeholder="Enter Session ID..."
+          placeholder="Search Interviews..."
           className="border p-3 rounded-lg w-96 shadow-sm focus:ring-2 focus:ring-secondary"
         />
         <button
-          onClick={() => handleJoinInterview(sessionId)}
+          onClick={handleSearchInterview}
           className="bg-primary hover:bg-secondary text-white px-6 py-3 rounded-lg shadow-lg transition"
         >
-          Join Interview
+          Search Interview
         </button>
       </div>
 
       <h2 className="text-3xl font-bold text-primary text-center mb-6">
-        Upcoming MyInterviews
+        Upcoming Interviews
       </h2>
 
-      {/* ✅ MyInterviews Grid */}
-      <motion.div
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-        initial="hidden"
-        animate={isVisible ? "visible" : "hidden"}
-        variants={{
-          hidden: { opacity: 0 },
-          visible: { opacity: 1, transition: { staggerChildren: 0.2 } },
-        }}
-      >
-        {Myinterviews.length > 0 ? (
-          Myinterviews.map(
-            (
-              interview: {
-                _id: string;
-                title: string;
-                date: string;
-                time: string;
-                duration: string;
-                post: string;
-              },
-              index: number
-            ) => (
+      {/* ✅ Show Loading State */}
+      {loading ? (
+        <p className="text-center text-gray-600">Loading interviews...</p>
+      ) : (
+        <motion.div
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+          initial="hidden"
+          animate={isVisible ? "visible" : "hidden"}
+          variants={{
+            hidden: { opacity: 0 },
+            visible: { opacity: 1, transition: { staggerChildren: 0.2 } },
+          }}
+        >
+          {Myinterviews.length > 0 ? (
+            Myinterviews.map((interview: Interview, index: number) => (
               <motion.div
                 key={index}
-                variants={{
-                  hidden: { opacity: 0, y: 30, scale: 0.9 },
-                  visible: { opacity: 1, y: 0, scale: 1 },
-                }}
-                transition={{ duration: 0.6, ease: "easeOut" }}
-                whileHover={{ scale: 1.05, transition: { duration: 0.3 } }}
-                className="bg-white p-6 rounded-xl shadow-lg transform transition-all duration-300 hover:shadow-2xl"
+                className="bg-white p-6 rounded-xl shadow-lg"
               >
-                {/* ✅ Interview Title */}
-                <h3 className="text-2xl font-semibold text-primary mb-3">
-                  {interview.title}
-                </h3>
+                <div>
+                  {/* ✅ Interview Title */}
+                  <h3 className="text-2xl font-semibold text-primary mb-3">
+                    {interview.title}
+                  </h3>
 
-                {/* ✅ Interview Details */}
-                <div className="text-gray-600 space-y-2">
-                  <p className="flex items-center">
-                    <Calendar className="text-secondary w-5 h-5 mr-2" />
-                    <strong>Date:</strong> {interview.date.slice(0, 10)}
-                  </p>
-                  <p className="flex items-center">
-                    <Clock className="text-secondary w-5 h-5 mr-2" />
-                    <strong>Time:</strong> {interview.time} (
-                    {interview.duration})
-                  </p>
+                  {/* ✅ Interview Details */}
+                  <div className="text-gray-600 space-y-2">
+                    <p className="flex items-center">
+                      <Calendar className="text-secondary w-5 h-5 mr-2" />
+                      <strong>Date:</strong> {interview.date.slice(0, 10)}
+                    </p>
+                    <p className="flex items-center">
+                      <Clock className="text-secondary w-5 h-5 mr-2" />
+                      <strong>Time:</strong> {interview.time} (
+                      {interview.duration})
+                    </p>
 
-                  <p className="flex items-center">
-                    <FileText className="text-secondary w-5 h-5 mr-2" />
-                    <strong>Post:</strong> {interview.post}
-                  </p>
+                    <p className="flex items-center">
+                      <FileText className="text-secondary w-5 h-5 mr-2" />
+                      <strong>Post:</strong> {interview.post}
+                    </p>
+                  </div>
                 </div>
-
-                {/* ✅ Join Interview Button */}
                 <button
                   onClick={() => handleJoinInterview(interview._id)}
                   className="bg-primary text-white px-4 py-2 rounded-lg mt-4 w-full hover:bg-secondary transition"
@@ -128,14 +152,16 @@ export default function MyInterviews() {
                   Join Interview
                 </button>
               </motion.div>
-            )
-          )
-        ) : (
-          <p className="text-center text-gray-600 col-span-3">
-            No Interviews available.
-          </p>
-        )}
-      </motion.div>
+            ))
+          ) : (
+            <div className="col-span-full text-center py-10">
+              <p className="text-center text-gray-600">
+                No Interviews available.
+              </p>
+            </div>
+          )}
+        </motion.div>
+      )}
     </motion.div>
   );
 }

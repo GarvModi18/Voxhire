@@ -1,23 +1,45 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import DefaultProfile from "../icons/default-profile.png"; // ✅ Fallback profile image
+import { CircleUser } from "lucide-react";
 
 interface SidebarProps {
   setActiveTab: (tab: string) => void;
   activeTab: string;
 }
 
+const UserIcon = () => {
+  return (
+    <CircleUser
+      color="#023047"
+      className="w-14 h-14 text-primary"
+      strokeWidth={1.5}
+    />
+  );
+};
 export default function Sidebar({ setActiveTab, activeTab }: SidebarProps) {
   const navigate = useNavigate();
-  const [admin, setAdmin] = useState<{
-    name: string;
-    profilePic: string;
-  } | null>(null);
-
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
       setAdmin(JSON.parse(storedUser));
+    }
+  }, []);
+  const [admin, setAdmin] = useState<{
+    name: string;
+    profilePic: string;
+  } | null>(null);
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      try {
+        const userData = JSON.parse(storedUser);
+        setAdmin({
+          name: userData.name || userData.username || "Admin",
+          profilePic: userData.profile_picture || userData.profilePic || "",
+        });
+      } catch (error) {
+        console.error("Error parsing user data:", error);
+      }
     }
   }, []);
 
@@ -27,21 +49,34 @@ export default function Sidebar({ setActiveTab, activeTab }: SidebarProps) {
     navigate("/login");
   };
 
+  const handleProfile = () => {
+    navigate("/profile");
+  };
+
   return (
-    <aside className="w-72 bg-gray-800 text-white min-h-screen p-6 shadow-lg flex flex-col justify-between border-r border-gray-700">
+    <aside className="w-72 text-lg border-primary text-primary min-h-screen p-6 shadow-lg flex flex-col justify-between ">
       {/* ✅ Admin Profile Section */}
       <div>
-        <h2 className="text-3xl font-bold mb-4 text-yellow-400">
+        <h2 className="text-3xl font-bold mb-4 text-white-400">
           Admin Dashboard
         </h2>
 
-        <div className="flex items-center space-x-4 mb-6 p-4 bg-gray-700 shadow-md rounded-lg">
-          <img
-            src={admin?.profilePic || DefaultProfile}
-            alt="Admin Profile"
-            className="w-14 h-14 rounded-full border-4 border-yellow-400"
-          />
-          <p className="font-semibold text-white">{admin?.name || "Admin"}</p>
+        <div
+          className="flex items-center space-x-4 mb-6 p-4 bg-white shadow-md rounded-lg cursor-pointer border-2 border-primary"
+          onClick={handleProfile}
+        >
+          {admin?.profilePic ? (
+            <img
+              src={admin.profilePic}
+              alt="Admin Profile"
+              className="w-14 h-14 rounded-full border-2 border-primary"
+            />
+          ) : (
+            <div className="w-14 h-14 rounded-full border-2 border-primary flex items-center justify-center bg-gray-100">
+              <UserIcon />
+            </div>
+          )}
+          <p className="font-semibold text-primary">{admin?.name || "Admin"}</p>
         </div>
 
         {/* ✅ Navigation Menu */}
@@ -56,10 +91,8 @@ export default function Sidebar({ setActiveTab, activeTab }: SidebarProps) {
             ].map((tab) => (
               <li key={tab}>
                 <button
-                  className={`block w-full text-left hover:bg-gray-600 p-3 rounded-lg transition ${
-                    activeTab === tab
-                      ? "bg-gray-600 text-yellow-400 font-bold"
-                      : ""
+                  className={`block w-full text-left hover:text-white hover:bg-primary p-3 rounded-lg transition ${
+                    activeTab === tab ? "bg-primary text-white font-bold" : ""
                   }`}
                   onClick={() => setActiveTab(tab)}
                 >

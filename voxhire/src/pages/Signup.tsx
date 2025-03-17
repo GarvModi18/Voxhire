@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import Lottie from "lottie-react";
+import signUpAnimation from "../icons/SignUpAnimation.json";
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -73,9 +75,8 @@ const Signup = () => {
       );
 
       setMessage(response.data.message);
-      setTimeout(() => {
-        navigate("/"); // Redirect on success
-      }, 2000);
+      await new Promise((resolve) => setTimeout(resolve, 2000)); // 2-sec delay
+      navigate("/");
     } catch (error: any) {
       setError(error.response?.data?.message || "Incorrect OTP");
     } finally {
@@ -84,7 +85,22 @@ const Signup = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+    <div className="flex justify-center items-center min-h-screen bg-gray-100 relative">
+      {loading && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-8 rounded-lg shadow-lg flex flex-col items-center">
+            <Lottie
+              animationData={signUpAnimation}
+              loop={true}
+              style={{ width: 300, height: 300 }}
+              initialSegment={[0, 30]}
+            />
+            <p className="mt-4 text-lg font-semibold text-gray-700">
+              {isOtpSent ? "Verifying OTP..." : "Sending OTP..."}
+            </p>
+          </div>
+        </div>
+      )}
       <div className="bg-white p-8 rounded-lg shadow-lg w-96 text-center">
         <h2 className="text-2xl font-bold text-primary mb-4">Sign Up</h2>
 
@@ -128,14 +144,14 @@ const Signup = () => {
               className="w-full p-3 border border-gray-300 rounded-lg"
             >
               <option value="Candidate">Candidate</option>
-              <option value="Admin">Admin</option>
+              {/* <option value="Admin">Admin</option> */}
             </select>
             <button
               type="submit"
               disabled={loading}
               className="w-full bg-primary text-white py-2 rounded-lg hover:bg-secondary transition"
             >
-              {loading ? "Sending..." : "Send OTP"}
+              Send OTP
             </button>
           </form>
         ) : (
@@ -158,7 +174,7 @@ const Signup = () => {
               disabled={loading}
               className="w-full bg-primary text-white py-2 rounded-lg hover:bg-secondary transition"
             >
-              {loading ? "Verifying..." : "Verify OTP"}
+              Verify OTP
             </button>
           </form>
         )}

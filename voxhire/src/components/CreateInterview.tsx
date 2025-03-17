@@ -2,31 +2,40 @@ import { useState } from "react";
 import axios from "axios";
 import Lottie from "lottie-react";
 import LoadingAnimation from "../icons/LoadingAnimation.json";
+import NoFileAnimation from "../icons/NoFileAnimation.json";
+
 export default function CreateInterview() {
   const [interviewData, setInterviewData] = useState({
     post: "",
     difficulty: "Easy",
-    duration: "30 min",
+    duration: 30,
     date: "",
     time: "",
+    type: "Mixed",
     additionalNotes: "",
   });
 
   const [file, setFile] = useState<File | null>(null);
-  const [uploadMessage, setUploadMessage] = useState("");
   const [createMessage, setCreateMessage] = useState("");
-  const [fileUrl, setFileUrl] = useState("");
-  const [candidateEmails, setCandidateEmails] = useState<string[]>([]);
-  const [candidateNames, setCandidateNames] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
-  const [showSuccessModal, setShowSuccessModal] = useState(false); // ✅ Success Modal State
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showWarningModal, setShowWarningModal] = useState(false);
 
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
     >
   ) => {
-    setInterviewData({ ...interviewData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+
+    if (name === "duration") {
+      const durationNumber = parseInt(value);
+      if (!isNaN(durationNumber)) {
+        setInterviewData({ ...interviewData, [name]: durationNumber });
+      }
+    } else {
+      setInterviewData({ ...interviewData, [name]: value });
+    }
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -35,42 +44,60 @@ export default function CreateInterview() {
     }
   };
 
-  const handleUpload = async () => {
-    if (!file) return setUploadMessage("❌ Please select a file");
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
 
-    const formData = new FormData();
-    formData.append("file", file);
+    // Validate form fields
+    if (
+      !interviewData.post ||
+      !interviewData.difficulty ||
+      !interviewData.date ||
+      !interviewData.time
+    ) {
+      setCreateMessage("❌ Please fill in all required fields");
+      return;
+    }
+
+    // Check if file is selected
+    if (!file) {
+      setShowWarningModal(true);
+      return;
+    }
+
+    setLoading(true);
+    setCreateMessage("");
 
     try {
-      const response = await axios.post(
+      // Step 1: Upload the file first
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const uploadResponse = await axios.post(
         "http://localhost:5000/api/interview/upload-candidates",
         formData,
         {
           headers: {
             "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${localStorage.getItem("token")}`, // ✅ Ensure token is sent
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         }
       );
 
-      setFileUrl(response.data.fileUrl);
-      setCandidateEmails(response.data.candidateEmails);
-      setCandidateNames(response.data.candidateNames);
-      setUploadMessage("✅ File uploaded successfully!");
-    } catch (error) {
-      console.error("❌ Upload failed:", error);
-      setUploadMessage("❌ Upload failed: Server Error");
-    }
-  };
+      console.log("File upload response:", uploadResponse.data);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!fileUrl || !file)
-      return setCreateMessage("Please upload a candidate file first!");
+      if (
+        !uploadResponse.data.candidateEmails ||
+        uploadResponse.data.candidateEmails.length === 0
+      ) {
+        setCreateMessage("❌ No valid candidate emails found in the file");
+        setLoading(false);
+        return;
+      }
 
-    setLoading(true);
-    try {
-      await axios.post(
+      // Step 2: Create the interview with the extracted candidate data
+      const { candidateEmails, candidateNames, fileUrl } = uploadResponse.data;
+
+      const createResponse = await axios.post(
         "http://localhost:5000/api/interview/create-interview",
         {
           ...interviewData,
@@ -80,120 +107,229 @@ export default function CreateInterview() {
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`, // ✅ Ensure token is sent
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         }
       );
 
-      setShowSuccessModal(true); // ✅ Show Success Modal
-    } catch (error) {
-      console.error("❌ Interview creation failed:", error);
-      setCreateMessage("❌ Interview creation failed.");
+      console.log("Interview creation response:", createResponse.data);
+      setShowSuccessModal(true);
+    } catch (error: any) {
+      console.error("❌ Process failed:", error);
+
+      // Determine if error happened during upload or creation
+      if (
+        error.response?.status === 400 &&
+        error.response?.data?.message?.includes("No valid emails")
+      ) {
+        setCreateMessage("❌ No valid emails found in the uploaded file");
+      } else if (
+        error.response?.status === 400 &&
+        error.response?.data?.message?.includes("Excel file is empty")
+      ) {
+        setCreateMessage("❌ The uploaded Excel file is empty");
+      } else if (error.response?.status === 401) {
+        setCreateMessage("❌ Authentication error: Please log in again");
+      } else {
+        setCreateMessage(
+          `❌ Error: ${error.response?.data?.message || "Failed to create interview"}`
+        );
+      }
     }
+
     setLoading(false);
   };
-
   return (
-    <div className="p-8 bg-gray-100 shadow-lg rounded-md">
+    <div className="p-8 shadow-xl rounded-md">
       <h2 className="text-2xl font-bold mb-6 text-primary">Create Interview</h2>
 
-      {/* ✅ Upload File Section */}
-      <div className="mb-6">
-        <h3 className="text-lg font-semibold mb-2">Upload Candidate List</h3>
-        <input
-          type="file"
-          accept=".pdf,.xlsx"
-          onChange={handleFileChange}
-          className="border p-3 w-full mb-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-white"
-        />
-        <button
-          onClick={handleUpload}
-          className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg w-full transition"
-        >
-          Upload File
-        </button>
-        {uploadMessage && (
-          <p className="mt-2 text-text2-600">{uploadMessage}</p>
-        )}
-      </div>
-
-      {/* ✅ Interview Form */}
       <form onSubmit={handleSubmit} className="space-y-4">
-        <input
-          type="text"
-          name="post"
-          placeholder="Job Position"
-          onChange={handleChange}
-          required
-          className="border p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-        />
+        {/* File Upload Section */}
+        <div className="mb-6">
+          <label
+            htmlFor="candidateFile"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
+            Upload Candidate List (Excel) *
+          </label>
+          <input
+            id="candidateFile"
+            type="file"
+            accept=".xlsx"
+            onChange={handleFileChange}
+            className="border-primary border p-3 w-full mb-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-white"
+          />
+          {file && (
+            <p className="text-green-600 text-sm">
+              ✓ File selected: {file.name}
+            </p>
+          )}
+        </div>
 
-        <select
-          name="difficulty"
-          onChange={handleChange}
-          className="border p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-        >
-          <option value="Easy">Easy</option>
-          <option value="Medium">Medium</option>
-          <option value="Hard">Hard</option>
-        </select>
+        {/* Interview Details */}
+        <div>
+          <label
+            htmlFor="post"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
+            Job Position *
+          </label>
+          <input
+            type="text"
+            id="post"
+            name="post"
+            value={interviewData.post}
+            placeholder="e.g., Software Engineer"
+            onChange={handleChange}
+            required
+            className="border p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-primary border-primary"
+          />
+        </div>
 
-        <input
-          type="text"
-          name="duration"
-          placeholder="Duration (e.g., 30 min, 1 hour)"
-          onChange={handleChange}
-          required
-          className="border p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-        />
+        <div>
+          <label
+            htmlFor="difficulty"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
+            Difficulty Level *
+          </label>
+          <select
+            id="difficulty"
+            name="difficulty"
+            value={interviewData.difficulty}
+            onChange={handleChange}
+            required
+            className="border-primary border p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+          >
+            <option value="Easy">Easy</option>
+            <option value="Medium">Medium</option>
+            <option value="Hard">Hard</option>
+          </select>
+        </div>
 
-        <input
-          type="date"
-          name="date"
-          onChange={handleChange}
-          required
-          className="border p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-        />
+        <div>
+          <label
+            htmlFor="type"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
+            Interview Type *
+          </label>
+          <select
+            id="type"
+            name="type"
+            value={interviewData.type}
+            onChange={handleChange}
+            required
+            className="border-primary border p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+          >
+            <option value="Q&A">Q&A</option>
+            <option value="Technical">Technical</option>
+            <option value="Mixed">Mixed</option>
+          </select>
+        </div>
 
-        <input
-          type="time"
-          name="time"
-          onChange={handleChange}
-          required
-          className="border p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-        />
+        <div>
+          <label
+            htmlFor="duration"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
+            Duration (minutes) *
+          </label>
+          <input
+            type="number"
+            id="duration"
+            name="duration"
+            min="5"
+            value={interviewData.duration}
+            onChange={handleChange}
+            required
+            className="border-primary border p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+          />
+        </div>
 
-        <textarea
-          name="additionalNotes"
-          placeholder="Admin Instructions"
-          onChange={handleChange}
-          className="border p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-        />
+        <div>
+          <label
+            htmlFor="date"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
+            Date *
+          </label>
+          <input
+            type="date"
+            id="date"
+            name="date"
+            value={interviewData.date}
+            onChange={handleChange}
+            required
+            className="border-primary border p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+          />
+        </div>
 
+        <div>
+          <label
+            htmlFor="time"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
+            Time *
+          </label>
+          <input
+            type="time"
+            id="time"
+            name="time"
+            value={interviewData.time}
+            onChange={handleChange}
+            required
+            className="border-primary border p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+          />
+        </div>
+
+        <div>
+          <label
+            htmlFor="additionalNotes"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
+            Admin Instructions
+          </label>
+          <textarea
+            id="additionalNotes"
+            name="additionalNotes"
+            value={interviewData.additionalNotes}
+            placeholder="Additional instructions for the interview"
+            onChange={handleChange}
+            className="border-primary border p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+          />
+        </div>
+
+        {/* Submit Button */}
         <button
           type="submit"
-          disabled={!fileUrl}
-          className="bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded-lg w-full transition"
+          className="bg-primary hover:bg-white text-white hover:text-primary hover:border-2 hover:border-primary px-4 py-2 rounded-lg w-full transition mt-6"
         >
           {loading ? "Processing..." : "Create Interview"}
         </button>
+
         {createMessage && (
-          <p className="mt-2 text-text2-600">{createMessage}</p>
+          <p
+            className={`mt-2 ${createMessage.includes("❌") ? "text-red-600" : "text-green-600"}`}
+          >
+            {createMessage}
+          </p>
         )}
       </form>
-      {/* ✅ Floating Loading Animation */}
+
+      {/* Loading Animation */}
       {loading && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg text-center w-80">
             <Lottie animationData={LoadingAnimation} loop={true} />
-            <p className="text-gray-700 mt-2">Creating Interview...</p>
+            <p className="text-gray-700 mt-2">Processing your request...</p>
           </div>
         </div>
       )}
 
-      {/* ✅ Success Modal */}
+      {/* Success Modal */}
       {showSuccessModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60">
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg text-center w-96">
             <h3 className="text-xl font-semibold text-green-600 mb-4">
               🎉 Interview Created Successfully!
@@ -205,6 +341,27 @@ export default function CreateInterview() {
             <button
               onClick={() => setShowSuccessModal(false)}
               className="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-500"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Warning Modal */}
+      {showWarningModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 z-50">
+          <div className="bg-white max-w-sm w-full p-6 rounded-lg shadow-lg text-center">
+            <h3 className="text-xl font-semibold text-red-600 mb-4">
+              ⚠️ Action Required
+            </h3>
+            <p className="text-gray-700">
+              Please select a candidate list file before creating an interview!
+            </p>
+            <Lottie animationData={NoFileAnimation} loop={true} />
+            <button
+              onClick={() => setShowWarningModal(false)}
+              className="mt-4 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-500"
             >
               Close
             </button>
