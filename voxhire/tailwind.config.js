@@ -14,6 +14,7 @@ export default {
                 "text": "#212529", // ✅ Text Color
                 "text2": "#555", // ✅ Secondary Text
                 "background": "#f8f9fa", // ✅ Light Background
+                "background2": "#c9f2ec",
             },
         },
     },
