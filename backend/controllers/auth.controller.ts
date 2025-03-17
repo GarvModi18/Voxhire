@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
 import cloudinary from "../config/cloudinary";
+import Candidate from "../models/Candidate";
 
 dotenv.config();
 
@@ -60,8 +61,15 @@ export const verifyOtp = async (req: Request, res: Response) => {
 
     const { name, hashedPassword, role } = otpStore[email].userData!;
     const newUser = new User({ name, email, password: hashedPassword, role });
-
     await newUser.save();
+
+    if (role === "Candidate") {
+      const newCandidate = new Candidate({
+        user_id: newUser._id, // Associate the candidate with the user
+        interview_sessions: [], // Initialize with empty array
+      });
+      await newCandidate.save();
+    }
     delete otpStore[email];
 
     res.status(200).json({ message: "Account created successfully" });
